@@ -151,7 +151,7 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                                 "DATA APAR & HYDRANT",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18,
+                                  fontSize: 14,
                                 ),
                               ),
                               Text(
@@ -205,7 +205,7 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                                 "HASIL INSPEKSI",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18,
+                                  fontSize: 14,
                                 ),
                               ),
                               Text(
@@ -258,7 +258,7 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                                 "USERS",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 18,
+                                  fontSize: 14,
                                 ),
                               ),
                               Text(

@@ -9,13 +9,16 @@ import 'package:http/http.dart' as http;
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'dart:developer';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
+import 'package:ppns_fire_fighters/admin/DataModel.dart';
+import 'dart:async';
 
 
 class DataApar extends StatefulWidget {
-  DataApar({Key? key}) : super(key: key);
+  DataApar({super.key, this.restorationId});
 
+  final String? restorationId;
 
-  final columns = 10;
+  final columns = 5;
   final rows = 20;
   List<List<String>> makeData() {
     final List<List<String>> output = [];
@@ -30,7 +33,8 @@ class DataApar extends StatefulWidget {
   }
 
   /// Simple generator for column title
-  List<String> makeTitleColumn() => List.generate(columns, (i) => 'Row $i');
+  // List<String> makeTitleColumn() => List.generate(columns, (i) => 'Row $i');
+
 
   /// Simple generator for row title
   List<String> makeTitleRow() => List.generate(rows, (i) => 'Col $i');
@@ -38,12 +42,104 @@ class DataApar extends StatefulWidget {
   _DataAparState createState() => _DataAparState();
 }
 
-class _DataAparState extends State<DataApar> {
+
+class _DataAparState extends State<DataApar> with RestorationMixin {
+  String? get restorationId => widget.restorationId;
+  final RestorableDateTime _selectedDate =
+      RestorableDateTime(DateTime(2021, 7, 25));
+  late final RestorableRouteFuture<DateTime?> _restorableDatePickerRouteFuture =
+      RestorableRouteFuture<DateTime?>(
+    onComplete: _selectDate,
+    onPresent: (NavigatorState navigator, Object? arguments) {
+      return navigator.restorablePush(
+        _datePickerRoute,
+        arguments: _selectedDate.value.millisecondsSinceEpoch,
+      );
+    },
+  );
+
+  @pragma('vm:entry-point')
+  static Route<DateTime> _datePickerRoute(
+    BuildContext context,
+    Object? arguments,
+  ) {
+    return DialogRoute<DateTime>(
+      context: context,
+      builder: (BuildContext context) {
+        return DatePickerDialog(
+          restorationId: 'date_picker_dialog',
+          initialEntryMode: DatePickerEntryMode.calendarOnly,
+          initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
+          firstDate: DateTime(2021),
+          lastDate: DateTime(2022),
+        );
+      },
+    );
+  }
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    registerForRestoration(_selectedDate, 'selected_date');
+    registerForRestoration(
+        _restorableDatePickerRouteFuture, 'date_picker_route_future');
+  }
+
+  void _selectDate(DateTime? newSelectedDate) {
+    if (newSelectedDate != null) {
+      setState(() {
+        _selectedDate.value = newSelectedDate;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              'Selected: ${_selectedDate.value.day}/${_selectedDate.value.month}/${_selectedDate.value.year}'),
+        ));
+      });
+    }
+  }
+
+  Timer? timer;
+  List<String> titleColumn = [
+    "id", "Nomor",  "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
+  ];
+  List<List<String>> makeData = [
+    ["id", "Nomor",  "Lokasi", "Tanggal Kadaluarsa", "Timestamp"],
+    // ["id", "Nomor",  "Lokasi", "Tanggal Kadaluarsa", "Timestamp"],
+  ];
+  
+  
+  late DataAparAPI currentData = DataAparAPI(status: "", pesan: "", data: makeData);
+
   @override
   void initState() {
     super.initState();
+    updateValue();
+    // getEndpoint();
+    timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => updateValue());
   }
 
+
+  void updateValue() async {
+    var url = Uri.parse("http://${globals.endpoint}/api_apar.php?read");  
+    try {
+      final response = await http.get(url).timeout(
+        const Duration(seconds: 1),
+        onTimeout: () {
+          return http.Response('Error', 408);
+        },
+      );
+      if (response.statusCode == 200) {
+        var respon = Json.tryDecode(response.body);
+        if (this.mounted) {
+          setState(() {
+            currentData = DataAparAPI.fromJson(respon);
+            // currentData = FromAPI.fromJson(Json.tryDecode(response.body));
+            // _currentSliderValue = double.parse(
+            //     currentData.kecerahan_lampu![_selectedIndex].kecerahan_lampu);
+          });
+        }
+        print(currentData.data);
+      }
+    } on Exception catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -161,44 +257,37 @@ class _DataAparState extends State<DataApar> {
                                 TextField(
                                   decoration: InputDecoration(
                                     // icon: Icon(Icons.account_circle),
-                                    labelText: 'Data1',
+                                    labelText: 'Nomor',
                                   ),
                                 ),
                                 TextField(
-                                  obscureText: true,
+                                  // obscureText: true,
                                   decoration: InputDecoration(
                                     // icon: Icon(Icons.lock),
-                                    labelText: 'Data2',
+                                    labelText: 'Lokasi',
                                   ),
                                 ),
-                                TextField(
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    // icon: Icon(Icons.lock),
-                                    labelText: 'Data3',
-                                  ),
+                                Padding(padding: EdgeInsets.all(10)),
+                                OutlinedButton(
+                                  onPressed: () {
+                                    _restorableDatePickerRouteFuture.present();
+                                  },
+                                  child: const Text('Tanggal Kadaluarsa'),
                                 ),
-                                TextField(
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    // icon: Icon(Icons.lock),
-                                    labelText: 'Data4',
-                                  ),
-                                ),
-                                TextField(
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    // icon: Icon(Icons.lock),
-                                    labelText: 'Data5',
-                                  ),
-                                ),
+                                // TextField(
+                                //   // obscureText: true,
+                                //   decoration: InputDecoration(
+                                //     // icon: Icon(Icons.lock),
+                                //     labelText: 'Tanggal Kadaluarsa',
+                                //   ),
+                                // ),
                               ],
                             ),
                             buttons: [
                               DialogButton(
                                 onPressed: () => Navigator.pop(context),
                                 child: Text(
-                                  "LOGIN",
+                                  "Submit",
                                   style: TextStyle(color: Colors.white, fontSize: 20),
                                 ),
                               )
@@ -219,9 +308,8 @@ class _DataAparState extends State<DataApar> {
                   margin: new EdgeInsets.only(top: 180),
                   decoration: new BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
                   child: SimpleTablePage(
-                      titleColumn: widget.makeTitleColumn(),
-                      titleRow: widget.makeTitleRow(),
-                      data: widget.makeData(),
+                      titleColumn: titleColumn,
+                      data: currentData.data,
                   ),
                 )
               ]
@@ -239,22 +327,19 @@ class SimpleTablePage extends StatelessWidget {
   SimpleTablePage({
     required this.data,
     required this.titleColumn,
-    required this.titleRow,
   });
 
   final List<List<String>> data;
   final List<String> titleColumn;
-  final List<String> titleRow;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StickyHeadersTable(
         columnsLength: titleColumn.length,
-        rowsLength: titleRow.length,
+        rowsLength: data.length,
         columnsTitleBuilder: (i) => Text(titleColumn[i]),
-        rowsTitleBuilder: (i) => Text(titleRow[i]),
-        contentCellBuilder: (i, j) => Text(data[i][j]),
+        rowsTitleBuilder: (i) => Text('${i}'),
+        contentCellBuilder: (i, j) => Text(data[j][i]),
         legendCell: Text(''),
         cellDimensions: CellDimensions.fixed(
           contentCellWidth: 100, 
