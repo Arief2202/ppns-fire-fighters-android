@@ -136,7 +136,7 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
             //     currentData.kecerahan_lampu![_selectedIndex].kecerahan_lampu);
           });
         }
-        print(currentData.data);
+        // print(currentData.data);
       }
     } on Exception catch (_) {}
   }
@@ -331,6 +331,14 @@ class SimpleTablePage extends StatelessWidget {
 
   final List<List<String>> data;
   final List<String> titleColumn;
+  List<TextEditingController> _controller = [
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: '')
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -338,7 +346,6 @@ class SimpleTablePage extends StatelessWidget {
         columnsLength: titleColumn.length,
         rowsLength: data.length,
         columnsTitleBuilder: (i) => Text(titleColumn[i]),
-        rowsTitleBuilder: (i) => Text('${i}'),
         contentCellBuilder: (i, j) => Text(data[j][i]),
         legendCell: Text(''),
         cellDimensions: CellDimensions.fixed(
@@ -346,6 +353,73 @@ class SimpleTablePage extends StatelessWidget {
           contentCellHeight: 50, 
           stickyLegendWidth: 85, 
           stickyLegendHeight: 50
+        ),
+        rowsTitleBuilder: (i) => Container(
+          padding: EdgeInsets.only(left: 10),
+          child: ElevatedButton(
+            onPressed: (){
+              print(data[i][0]);
+              _controller[0].text = data[i][0];
+              _controller[1].text = data[i][1];
+              _controller[2].text = data[i][2];
+              _controller[3].text = data[i][3];
+              _controller[4].text = data[i][4];
+              Alert(
+                context: context,
+                title: "Edit Data Apar",
+                content: Column(
+                  children: <Widget>[
+                    TextField(
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.account_circle),
+                        labelText: 'ID',
+                      ),
+                      controller: _controller[0],
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.lock),
+                        labelText: 'Nomor',
+                      ),
+                      controller: _controller[1],
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.lock),
+                        labelText: 'Lokasi',
+                      ),
+                      controller: _controller[2],
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.lock),
+                        labelText: 'Tanggal Kadaluarsa',
+                      ),
+                      controller: _controller[3],
+                    ),
+                    TextField(
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.lock),
+                        labelText: 'Timestamp',
+                      ),
+                      controller: _controller[4],
+                    ),
+                  ],
+                ),
+                buttons: [
+                  DialogButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      "Update",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  )
+                ]).show();
+            }, 
+            child: Text("Edit")
+          ),
         ),
       ),
     );
