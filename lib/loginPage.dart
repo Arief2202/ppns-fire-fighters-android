@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert' show jsonDecode;
+import 'dart:convert';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -188,7 +188,8 @@ class LoginPageState extends State<LoginPage> {
           ],
         ).show();
       } else {
-        Map<String, dynamic> parsed = jsonDecode(response.body);
+        print(response.body);
+        Map<String, dynamic> parsed = Json.tryDecode(response.body);
         Alert(
           context: context,
           type: AlertType.error,
@@ -207,4 +208,24 @@ class LoginPageState extends State<LoginPage> {
       }
     }
   }
+}
+
+
+class Json {
+  static String? tryEncode(data) {
+    try {
+      return jsonEncode(data);
+    } catch (e) {
+      return " ";
+    }
+  }
+
+  static dynamic tryDecode(data) {
+    try {
+      return jsonDecode(data);
+    } catch (e) {
+      return " ";
+    }
+  }
+
 }

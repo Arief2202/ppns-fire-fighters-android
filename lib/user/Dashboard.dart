@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last
 
 import 'package:flutter/material.dart';
+import 'package:ppns_fire_fighters/user/TermsCondition.dart';
 import 'package:ppns_fire_fighters/user/inspeksi/Inspeksi_Apar.dart';
 import 'package:ppns_fire_fighters/user/inspeksi/Inspeksi_Hydrant_OHB.dart';
 import 'package:ppns_fire_fighters/user/inspeksi/inspeksi_Hydrant_IHB.dart';
@@ -126,7 +127,8 @@ class _DashboardState extends State<Dashboard> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) {
-                          return InspeksiApar();
+                          // return InspeksiApar();
+                          return TermsCondition(code: 'apar');
                         }),
                       );
                     },
@@ -176,8 +178,8 @@ class _DashboardState extends State<Dashboard> {
                     onTap: () {                      
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) {
-                          return InspeksiHydrantOHB();
+                        MaterialPageRoute(builder: (context) {                          
+                          return TermsCondition(code: 'hydrantOHB');
                         }),
                       );
                     },
@@ -227,7 +229,7 @@ class _DashboardState extends State<Dashboard> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) {
-                          return InspeksiHydrantIHB();
+                          return TermsCondition(code: 'hydrantIHB');
                         }),
                       );
                     },

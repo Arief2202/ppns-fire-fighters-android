@@ -9,70 +9,89 @@ import 'package:http/http.dart' as http;
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'dart:developer';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
+import 'package:ppns_fire_fighters/admin/DataModel.dart';
+import 'package:intl/intl.dart';
+import 'dart:async';
 
 
 class Users extends StatefulWidget {
-  Users({Key? key}) : super(key: key);
+  Users({super.key, this.restorationId});
 
+  final String? restorationId;
+
+  final columns = 5;
+  final rows = 20;
+  List<List<String>> makeData() {
+    final List<List<String>> output = [];
+    for (int i = 0; i < columns; i++) {
+      final List<String> row = [];
+      for (int j = 0; j < rows; j++) {
+        row.add('Col$j Row$i');
+      }
+      output.add(row);
+    }
+    return output;
+  }
+
+  /// Simple generator for column title
+  // List<String> makeTitleColumn() => List.generate(columns, (i) => 'Row $i');
+
+
+  /// Simple generator for row title
+  List<String> makeTitleRow() => List.generate(rows, (i) => 'Col $i');
   @override
   _UsersState createState() => _UsersState();
 }
 
+
 class _UsersState extends State<Users> {
+  List<TextEditingController> _controller = [
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: '')
+  ];
+
+  Timer? timer;
+  List<String> titleColumn = [
+    "id", "Role",  "Name", "Email", "Created At"
+  ];
+  List<List<String>> makeData = [];
+  
+  
+  late DataUserAPI currentData = DataUserAPI(status: "", pesan: "", data: makeData);
+
   @override
   void initState() {
     super.initState();
+    updateValue();
+    timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => updateValue());
   }
 
-  // List<String> tableHeader = ["email", "name", "role", "id"];
-  // List<List<String>> data = [
-  //   ["1", "admin@gmail.com", "Admin", "Admin", "1"],
-  //   ["2", "arief.d2022@gmail.com", "Arief", "Inspektor", "2"],
-  //   ["3", "jimmy@gmail.com", "Jimmy", "Inspektor", "3"],
-  //   ["4", "steve@gmail.com", "Stave", "Inspektor", "4"],
-  // ];
-  
-  List<String> tableHeader = ["id", "email", "name", "role"];
-  List<List<String>> data = [
-    ["1", "admin@gmail.com", "Admin", "Admin", ""],
-    ["2", "arief.d2022@gmail.com", "Arief", "Inspektor", ""],
-    ["3", "jimmy@gmail.com", "Jimmy", "Inspektor", ""],
-    ["4", "steve@gmail.com", "Stave", "Inspektor", ""],
-  ];
 
+  void updateValue() async {
+    var url = Uri.parse("http://${globals.endpoint}/api_user.php?read");  
+    try {
+      final response = await http.get(url).timeout(
+        const Duration(seconds: 1),
+        onTimeout: () {
+          return http.Response('Error', 408);
+        },
+      );
+      if (response.statusCode == 200) {
+        var respon = Json.tryDecode(response.body);
+        if (this.mounted) {
+          setState(() {
+            currentData = DataUserAPI.fromJson(respon);
+            print(currentData);
+          });
+        }
+      }
+    } on Exception catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
-    // List<dynamic> data = [
-    //   {"id": 1, "role": "1", "name": "admin", "email": "admin", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 2, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 3, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 1, "role": "1", "name": "admin", "email": "admin", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 2, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 3, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 1, "role": "1", "name": "admin", "email": "admin", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 2, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 3, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 1, "role": "1", "name": "admin", "email": "admin", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 2, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 3, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 1, "role": "1", "name": "admin", "email": "admin", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 2, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 3, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 1, "role": "1", "name": "admin", "email": "admin", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 2, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 3, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 1, "role": "1", "name": "admin", "email": "admin", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 2, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 3, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 1, "role": "1", "name": "admin", "email": "admin", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 2, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 3, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 1, "role": "1", "name": "admin", "email": "admin", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 2, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    //   {"id": 3, "role": "0", "name": "arief", "email": "arief.d2202@gmail.com", "Timestamp": "2023-04-13 03:02:24"},
-    // ];
-
     return Container(
       decoration: new BoxDecoration(color: Colors.white),
       child: Stack(
@@ -148,16 +167,16 @@ class _UsersState extends State<Users> {
               alignment: Alignment.topLeft,
               child: Column(children: [
                 Container(
-                  margin: new EdgeInsets.only(left: 30.0, right: 10.0, top: 130),
+                  margin: new EdgeInsets.only(left: 20.0, right: 10.0, top: 135),
                   child: 
                       Text(
-                        "USERS",
+                        "Data User",
                         style: TextStyle(
                           fontFamily: "SanFrancisco",
                           decoration: TextDecoration.none,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w900,
-                          fontSize: 30,
+                          fontSize: 20,
                           color: Color.fromARGB(255, 255, 50, 50)
                         ),
                       ),
@@ -165,6 +184,7 @@ class _UsersState extends State<Users> {
               ]
             )
           ),
+          
           Align(
               alignment: Alignment.topRight,
               child: Column(children: [
@@ -180,52 +200,60 @@ class _UsersState extends State<Users> {
                     onPressed: (){
                           Alert(
                             context: context,
-                            title: "Tambahkan User",
+                            title: "Tambahkan Data",
                             content: Column(
                               children: <Widget>[
                                 TextField(
                                   decoration: InputDecoration(
                                     // icon: Icon(Icons.account_circle),
-                                    labelText: 'Data1',
+                                    labelText: 'role',
                                   ),
+                                  controller: _controller[0],
                                 ),
                                 TextField(
-                                  obscureText: true,
+                                  // obscureText: true,
                                   decoration: InputDecoration(
                                     // icon: Icon(Icons.lock),
-                                    labelText: 'Data2',
+                                    labelText: 'name',
                                   ),
+                                  controller: _controller[1],
                                 ),
                                 TextField(
-                                  obscureText: true,
+                                  // obscureText: true,
                                   decoration: InputDecoration(
                                     // icon: Icon(Icons.lock),
-                                    labelText: 'Data3',
+                                    labelText: 'email',
                                   ),
+                                  controller: _controller[2],
                                 ),
                                 TextField(
-                                  obscureText: true,
+                                  // obscureText: true,
                                   decoration: InputDecoration(
                                     // icon: Icon(Icons.lock),
-                                    labelText: 'Data4',
+                                    labelText: 'password',
                                   ),
-                                ),
-                                TextField(
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    // icon: Icon(Icons.lock),
-                                    labelText: 'Data5',
-                                  ),
+                                  controller: _controller[3],
                                 ),
                               ],
                             ),
                             buttons: [
                               DialogButton(
-                                onPressed: () => Navigator.pop(context),
                                 child: Text(
-                                  "Create",
+                                  "Submit",
                                   style: TextStyle(color: Colors.white, fontSize: 20),
                                 ),
+                                onPressed: () async{                                  
+                                  var url = Uri.parse("http://${globals.endpoint}/api_user.php?create&role=${_controller[0].text}&name=${_controller[1].text}&email=${_controller[2].text}&password=${_controller[3].text}");  
+                                  try {
+                                    final response = await http.get(url).timeout(
+                                      const Duration(seconds: 1),
+                                      onTimeout: () {
+                                        return http.Response('Error', 408);
+                                      },
+                                    );
+                                  } on Exception catch (_) {}
+                                  Navigator.pop(context);
+                                },
                               )
                             ]).show();
                     },
@@ -235,8 +263,6 @@ class _UsersState extends State<Users> {
                   )
                 ),
             ])),
-            
-            
           Align(
               alignment: Alignment.topRight,
               child: Column(children: [
@@ -245,7 +271,10 @@ class _UsersState extends State<Users> {
                   height: MediaQuery.of(context).size.height-180,
                   margin: new EdgeInsets.only(top: 180),
                   decoration: new BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
-                  child: SimpleTablePage(data: data, titleRow: tableHeader),
+                  child: SimpleTablePageState(
+                      // titleColumn: titleColumn,
+                      // data: currentData.data,
+                  ),
                 )
               ]
               )
@@ -257,95 +286,232 @@ class _UsersState extends State<Users> {
   }
 }
 
+class SimpleTablePageState extends StatefulWidget {
+  SimpleTablePageState({
+    Key? key
+  }) : super(key: key);
 
-class SimpleTablePage extends StatelessWidget {
-  SimpleTablePage({
-    required this.data,
-    required this.titleRow,
-  });
+ @override
+  State<SimpleTablePageState> createState() => SimpleTablePage();
+}
 
-  final List<List<String>> data;
-  final List<String> titleRow;
+class SimpleTablePage extends State<SimpleTablePageState>{//StatelessWidget {
+
+  List<TextEditingController> _controller = [
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: '')
+  ];
+  int? selectedRole;
+
+  Timer? timer;
+  List<String> titleColumn = [
+    "id", "Role",  "Name", "Email", "Created At"
+  ];
+  List<List<String>> makeData = [];
+  
+  
+  late DataUserAPI data = DataUserAPI(status: "", pesan: "", data: makeData);
+
+  @override
+  void initState() {
+    super.initState();
+    updateValue();
+    timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => updateValue());
+  }
+
+
+  void updateValue() async {
+    var url = Uri.parse("http://${globals.endpoint}/api_user.php?read");  
+    try {
+      final response = await http.get(url).timeout(
+        const Duration(seconds: 1),
+        onTimeout: () {
+          return http.Response('Error', 408);
+        },
+      );
+      if (response.statusCode == 200) {
+        var respon = Json.tryDecode(response.body);
+        if (this.mounted) {
+          setState(() {
+            data = DataUserAPI.fromJson(respon);
+          });
+        }
+      }
+    } on Exception catch (_) {}
+  }
+  // void updateValue() async {
+  //   var url = Uri.parse("http://${globals.endpoint}/api_user.php?read");  
+  //   try {
+  //     final response = await http.get(url).timeout(
+  //       const Duration(seconds: 1),
+  //       onTimeout: () {
+  //         return http.Response('Error', 408);
+  //       },
+  //     );
+  //     if (response.statusCode == 200) {
+  //       var respon = Json.tryDecode(response.body);
+  //       if (this.mounted) {
+  //         setState(() {
+  //           currentData = DataUserAPI.fromJson(respon);
+  //         });
+  //       }
+  //     }
+  //   } on Exception catch (_) {}
+  // }
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: StickyHeadersTable(
-        columnsLength: titleRow.length,
-        rowsLength: data.length,
-        columnsTitleBuilder: (i) => Text(titleRow[i]),
+        columnsLength: titleColumn.length,
+        rowsLength: data.data.length,
+        columnsTitleBuilder: (i) => Text(titleColumn[i]),
+        contentCellBuilder: (i, j) => Text( i!=1?(i == 4 ? data.data[j][i+1] : data.data[j][i]):(data.data[j][i] == '1' ? "Admin" : "Inspektor") ),
+        legendCell: Text(''),
+        cellDimensions: CellDimensions.fixed(
+          contentCellWidth: 100, 
+          contentCellHeight: 50, 
+          stickyLegendWidth: 85, 
+          stickyLegendHeight: 50
+        ),
         rowsTitleBuilder: (i) => Container(
           padding: EdgeInsets.only(left: 10),
           child: ElevatedButton(
             onPressed: (){
-              print(data[i][0]);
+              setState(() {
+                selectedRole = int.parse(data.data[i][1]);
+                _controller[0].text = data.data[i][0];
+                _controller[1].text = data.data[i][1];
+                _controller[2].text = data.data[i][2];
+                _controller[3].text = data.data[i][3];
+                // _controller[4].text = data[i][4];
+                _controller[5].text = data.data[i][5];
+              });
+              
               Alert(
                 context: context,
-                title: "Edit User",
+                title: "Edit Data Apar",
                 content: Column(
                   children: <Widget>[
                     TextField(
+                      readOnly: true,
                       decoration: InputDecoration(
                         // icon: Icon(Icons.account_circle),
-                        labelText: 'Data1',
+                        labelText: 'ID',
                       ),
+                      controller: _controller[0],
+                    ),
+                    ListTile(
+                      title: const Text('Admin'),
+                      leading: Radio<int>(
+                        value: 1,
+                        groupValue: selectedRole,
+                        onChanged: (int? value) {
+                          setState(() {
+                            selectedRole = value;
+                          });
+                        },
+                      ),
+                    ),
+                    ListTile(
+                      title: const Text('Inspektor'),
+                      leading: Radio<int>(
+                        value: 0,
+                        groupValue: selectedRole,
+                        onChanged: (int? value) {
+                            selectedRole = value;
+                        },
+                      ),
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.lock),
+                        labelText: 'Role',
+                      ),
+                      controller: _controller[1],
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.lock),
+                        labelText: 'Name',
+                      ),
+                      controller: _controller[2],
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.lock),
+                        labelText: 'Email',
+                      ),
+                      controller: _controller[3],
                     ),
                     TextField(
                       obscureText: true,
                       decoration: InputDecoration(
                         // icon: Icon(Icons.lock),
-                        labelText: 'Data2',
+                        labelText: 'Password',
                       ),
+                      controller: _controller[4],
                     ),
                     TextField(
-                      obscureText: true,
+                      readOnly: true,
                       decoration: InputDecoration(
                         // icon: Icon(Icons.lock),
-                        labelText: 'Data3',
+                        labelText: 'Timestamp',
                       ),
-                    ),
-                    TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        // icon: Icon(Icons.lock),
-                        labelText: 'Data4',
-                      ),
-                    ),
-                    TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        // icon: Icon(Icons.lock),
-                        labelText: 'Data5',
-                      ),
+                      controller: _controller[5],
                     ),
                   ],
                 ),
                 buttons: [
-                  DialogButton(
-                    onPressed: () => Navigator.pop(context),
+                  DialogButton(         
+                    color: Colors.red,   
+                    child: Text(
+                      "Delete",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    onPressed: () async {
+                      var url = Uri.parse("http://${globals.endpoint}/api_user.php?delete&id=${_controller[0].text}");  
+                      try {
+                        final response = await http.get(url).timeout(
+                          const Duration(seconds: 1),
+                          onTimeout: () {
+                            return http.Response('Error', 408);
+                          },
+                        );
+                      } on Exception catch (_) {}
+                      Navigator.pop(context);
+                    }
+                  ),
+                  DialogButton(            
                     child: Text(
                       "Update",
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
+                    onPressed: () async {
+                      if(_controller[4].text == '' || _controller[4].text == null) _controller[4].text = data.data[i][4];
+                      print(_controller[4].text);
+                      var url = Uri.parse("http://${globals.endpoint}/api_user.php?update&id=${_controller[0].text}&role=${_controller[1].text}&name=${_controller[2].text}&email=${_controller[3].text}&password=${_controller[4].text}");  
+                      try {
+                        final response = await http.get(url).timeout(
+                          const Duration(seconds: 1),
+                          onTimeout: () {
+                            return http.Response('Error', 408);
+                          },
+                        );
+                        print(response.body);
+                      } on Exception catch (_) {}
+                      Navigator.pop(context);
+                    }
                   )
                 ]).show();
             }, 
             child: Text("Edit")
           ),
         ),
-        contentCellBuilder: (i, j) => Text(data[j][i]),
-        legendCell: Text('Action'),
-        cellDimensions: CellDimensions.fixed(
-          contentCellWidth: 100, 
-          contentCellHeight: 60, 
-          stickyLegendWidth: 85, 
-          stickyLegendHeight: 60
-        ),
-        // cellDimensions: CellDimensions.uniform(
-        //   width: (screenWidth/2),
-        //   height: 60,
-        // ),
       ),
     );
   }

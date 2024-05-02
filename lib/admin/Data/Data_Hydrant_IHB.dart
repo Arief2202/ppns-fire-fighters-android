@@ -6,44 +6,116 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:ppns_fire_fighters/globals.dart' as globals;
 import 'package:http/http.dart' as http;
-import 'package:horizontal_data_table/horizontal_data_table.dart';
-import 'dart:developer';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
+import 'package:ppns_fire_fighters/admin/DataModel.dart';
+import 'dart:async';
 
 
 class DataHydrantIHB extends StatefulWidget {
-  DataHydrantIHB({Key? key}) : super(key: key);
+  DataHydrantIHB({super.key, this.restorationId});
 
+  final String? restorationId;
 
-  final columns = 10;
-  final rows = 20;
-  List<List<String>> makeData() {
-    final List<List<String>> output = [];
-    for (int i = 0; i < columns; i++) {
-      final List<String> row = [];
-      for (int j = 0; j < rows; j++) {
-        row.add('Col$j Row$i');
-      }
-      output.add(row);
-    }
-    return output;
-  }
-
-  /// Simple generator for column title
-  List<String> makeTitleColumn() => List.generate(columns, (i) => 'Row $i');
-
-  /// Simple generator for row title
-  List<String> makeTitleRow() => List.generate(rows, (i) => 'Col $i');
   @override
   _DataHydrantIHBState createState() => _DataHydrantIHBState();
 }
 
-class _DataHydrantIHBState extends State<DataHydrantIHB> {
+
+class _DataHydrantIHBState extends State<DataHydrantIHB> with RestorationMixin {
+  String? get restorationId => widget.restorationId;
+  final RestorableDateTime _selectedDate =
+      RestorableDateTime(DateTime(2021, 7, 25));
+  late final RestorableRouteFuture<DateTime?> _restorableDatePickerRouteFuture =
+      RestorableRouteFuture<DateTime?>(
+    onComplete: _selectDate,
+    onPresent: (NavigatorState navigator, Object? arguments) {
+      return navigator.restorablePush(
+        _datePickerRoute,
+        arguments: _selectedDate.value.millisecondsSinceEpoch,
+      );
+    },
+  );
+
+  @pragma('vm:entry-point')
+  static Route<DateTime> _datePickerRoute(
+    BuildContext context,
+    Object? arguments,
+  ) {
+    return DialogRoute<DateTime>(
+      context: context,
+      builder: (BuildContext context) {
+        return DatePickerDialog(
+          restorationId: 'date_picker_dialog',
+          initialEntryMode: DatePickerEntryMode.calendarOnly,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(DateTime.now().year-5),
+          lastDate: DateTime(DateTime.now().year+20),
+        );
+      },
+    );
+  }
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    registerForRestoration(_selectedDate, 'selected_date');
+    registerForRestoration(
+        _restorableDatePickerRouteFuture, 'date_picker_route_future');
+  }
+
+  List<TextEditingController> _controller = [
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: '')
+  ];
+
+  void _selectDate(DateTime? newSelectedDate) {
+    if (newSelectedDate != null) {
+      setState(() {
+        _selectedDate.value = newSelectedDate;
+        _controller[2].text = "${_selectedDate.value.year}-${_selectedDate.value.month}-${_selectedDate.value.day} 00:00:00";
+        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        //   content: Text(_controller[2].text),
+        // ));
+      });
+    }
+  }
+
+  Timer? timer;
+  List<String> titleColumn = [
+    "id", "Nomor",  "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
+  ];
+  List<List<String>> makeData = [];
+  
+  
+  late DataAPI currentData = DataAPI(status: "", pesan: "", data: makeData);
+
   @override
   void initState() {
     super.initState();
+    updateValue();
+    timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => updateValue());
   }
 
+
+  void updateValue() async {
+    var url = Uri.parse("http://${globals.endpoint}/api_hydrant.php?read&jenis=ihb");  
+    try {
+      final response = await http.get(url).timeout(
+        const Duration(seconds: 1),
+        onTimeout: () {
+          return http.Response('Error', 408);
+        },
+      );
+      if (response.statusCode == 200) { 
+        var respon = Json.tryDecode(response.body);
+        if (this.mounted) {
+          setState(() {
+            currentData = DataAPI.fromJson(respon);
+          });
+        }
+      }
+    } on Exception catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +203,7 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> {
                           decoration: TextDecoration.none,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w900,
-                          fontSize: 20,
+                          fontSize: 16,
                           color: Color.fromARGB(255, 255, 50, 50)
                         ),
                       ),
@@ -153,6 +225,9 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> {
                       ),
                     ),
                     onPressed: (){
+                          setState(() {
+                            _controller[2].text = "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day} ${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}";
+                          });
                           Alert(
                             context: context,
                             title: "Tambahkan Data",
@@ -161,46 +236,60 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> {
                                 TextField(
                                   decoration: InputDecoration(
                                     // icon: Icon(Icons.account_circle),
-                                    labelText: 'Data1',
+                                    labelText: 'Nomor',
                                   ),
+                                  controller: _controller[0],
                                 ),
                                 TextField(
-                                  obscureText: true,
+                                  // obscureText: true,
                                   decoration: InputDecoration(
                                     // icon: Icon(Icons.lock),
-                                    labelText: 'Data2',
+                                    labelText: 'Lokasi',
                                   ),
+                                  controller: _controller[1],
+                                ),
+                                Padding(padding: EdgeInsets.all(10)),
+                                OutlinedButton(
+                                  onPressed: () {
+                                    _restorableDatePickerRouteFuture.present();
+                                  },
+                                  child: const Text('Pilih Tanggal Kadaluarsa'),
                                 ),
                                 TextField(
-                                  obscureText: true,
+                                  // obscureText: true,
                                   decoration: InputDecoration(
                                     // icon: Icon(Icons.lock),
-                                    labelText: 'Data3',
+                                    labelText: 'Tanggal Kadaluarsa',
                                   ),
+                                  controller: _controller[2],
                                 ),
-                                TextField(
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    // icon: Icon(Icons.lock),
-                                    labelText: 'Data4',
-                                  ),
-                                ),
-                                TextField(
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    // icon: Icon(Icons.lock),
-                                    labelText: 'Data5',
-                                  ),
-                                ),
+                                // TextField(
+                                //   // obscureText: true,
+                                //   decoration: InputDecoration(
+                                //     // icon: Icon(Icons.lock),
+                                //     labelText: 'Tanggal Kadaluarsa',
+                                //   ),
+                                // ),
                               ],
                             ),
                             buttons: [
                               DialogButton(
-                                onPressed: () => Navigator.pop(context),
                                 child: Text(
-                                  "LOGIN",
+                                  "Submit",
                                   style: TextStyle(color: Colors.white, fontSize: 20),
                                 ),
+                                onPressed: () async{                                  
+                                  var url = Uri.parse("http://${globals.endpoint}/api_hydrant.php?create&jenis=ihb&nomor=${_controller[0].text}&lokasi=${_controller[1].text}&kadaluarsa=${_controller[2].text}");  
+                                  try {
+                                    final response = await http.get(url).timeout(
+                                      const Duration(seconds: 1),
+                                      onTimeout: () {
+                                        return http.Response('Error', 408);
+                                      },
+                                    );
+                                  } on Exception catch (_) {}
+                                  Navigator.pop(context);
+                                },
                               )
                             ]).show();
                     },
@@ -219,9 +308,8 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> {
                   margin: new EdgeInsets.only(top: 180),
                   decoration: new BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
                   child: SimpleTablePage(
-                      titleColumn: widget.makeTitleColumn(),
-                      titleRow: widget.makeTitleRow(),
-                      data: widget.makeData(),
+                      titleColumn: titleColumn,
+                      data: currentData.data,
                   ),
                 )
               ]
@@ -239,28 +327,129 @@ class SimpleTablePage extends StatelessWidget {
   SimpleTablePage({
     required this.data,
     required this.titleColumn,
-    required this.titleRow,
   });
 
   final List<List<String>> data;
   final List<String> titleColumn;
-  final List<String> titleRow;
+  List<TextEditingController> _controller = [
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: '')
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StickyHeadersTable(
         columnsLength: titleColumn.length,
-        rowsLength: titleRow.length,
+        rowsLength: data.length,
         columnsTitleBuilder: (i) => Text(titleColumn[i]),
-        rowsTitleBuilder: (i) => Text(titleRow[i]),
-        contentCellBuilder: (i, j) => Text(data[i][j]),
+        contentCellBuilder: (i, j) => Text(data[j][i]),
         legendCell: Text(''),
         cellDimensions: CellDimensions.fixed(
           contentCellWidth: 100, 
           contentCellHeight: 50, 
           stickyLegendWidth: 85, 
           stickyLegendHeight: 50
+        ),
+        rowsTitleBuilder: (i) => Container(
+          padding: EdgeInsets.only(left: 10),
+          child: ElevatedButton(
+            onPressed: (){
+              print(data[i][0]);
+              _controller[0].text = data[i][0];
+              _controller[1].text = data[i][1];
+              _controller[2].text = data[i][2];
+              _controller[3].text = data[i][3];
+              _controller[4].text = data[i][4];
+              Alert(
+                context: context,
+                title: "Edit Data Apar",
+                content: Column(
+                  children: <Widget>[
+                    TextField(
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.account_circle),
+                        labelText: 'ID',
+                      ),
+                      controller: _controller[0],
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.lock),
+                        labelText: 'Nomor',
+                      ),
+                      controller: _controller[1],
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.lock),
+                        labelText: 'Lokasi',
+                      ),
+                      controller: _controller[2],
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.lock),
+                        labelText: 'Tanggal Kadaluarsa',
+                      ),
+                      controller: _controller[3],
+                    ),
+                    TextField(
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.lock),
+                        labelText: 'Timestamp',
+                      ),
+                      controller: _controller[4],
+                    ),
+                  ],
+                ),
+                buttons: [
+                  DialogButton(         
+                    color: Colors.red,   
+                    child: Text(
+                      "Delete",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    onPressed: () async {
+                      var url = Uri.parse("http://${globals.endpoint}/api_hydrant.php?delete&id=${_controller[0].text}");  
+                      try {
+                        final response = await http.get(url).timeout(
+                          const Duration(seconds: 1),
+                          onTimeout: () {
+                            return http.Response('Error', 408);
+                          },
+                        );
+                      } on Exception catch (_) {}
+                      Navigator.pop(context);
+                    }
+                  ),
+                  DialogButton(            
+                    child: Text(
+                      "Update",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    onPressed: () async {
+                      var url = Uri.parse("http://${globals.endpoint}/api_hydrant.php?update&id=${_controller[0].text}&nomor=${_controller[1].text}&lokasi=${_controller[2].text}&kadaluarsa=${_controller[3].text}");  
+                      try {
+                        final response = await http.get(url).timeout(
+                          const Duration(seconds: 1),
+                          onTimeout: () {
+                            return http.Response('Error', 408);
+                          },
+                        );
+                      } on Exception catch (_) {}
+                      Navigator.pop(context);
+                    }
+                  )
+                ]).show();
+            }, 
+            child: Text("Edit")
+          ),
         ),
       ),
     );

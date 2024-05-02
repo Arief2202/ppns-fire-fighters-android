@@ -11,7 +11,10 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:ppns_fire_fighters/globals.dart' as globals;
 import 'package:http/http.dart' as http;
 import 'dart:convert' show jsonDecode;
-
+import 'package:month_year_picker/month_year_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart';
 void main() {
   runApp(
     Phoenix(
@@ -29,6 +32,14 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: <LocalizationsDelegate<Object>>[
+            GlobalMaterialLocalizations.delegate,
+            MonthYearPickerLocalizations.delegate,
+      ],
+      // supportedLocales: <Locale>[
+      //   Locale('id', 'ID'), // Indonesia
+      //   // ... other locales the app supports
+      // ],
       debugShowCheckedModeBanner: false,
       title: 'Auto Login',
       theme: ThemeData(

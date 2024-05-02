@@ -10,34 +10,15 @@ import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'dart:developer';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
 import 'package:ppns_fire_fighters/admin/DataModel.dart';
+import 'package:intl/intl.dart';
 import 'dart:async';
-
+import 'package:month_year_picker/month_year_picker.dart';
 
 class DataApar extends StatefulWidget {
   DataApar({super.key, this.restorationId});
 
   final String? restorationId;
 
-  final columns = 5;
-  final rows = 20;
-  List<List<String>> makeData() {
-    final List<List<String>> output = [];
-    for (int i = 0; i < columns; i++) {
-      final List<String> row = [];
-      for (int j = 0; j < rows; j++) {
-        row.add('Col$j Row$i');
-      }
-      output.add(row);
-    }
-    return output;
-  }
-
-  /// Simple generator for column title
-  // List<String> makeTitleColumn() => List.generate(columns, (i) => 'Row $i');
-
-
-  /// Simple generator for row title
-  List<String> makeTitleRow() => List.generate(rows, (i) => 'Col $i');
   @override
   _DataAparState createState() => _DataAparState();
 }
@@ -69,9 +50,9 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
         return DatePickerDialog(
           restorationId: 'date_picker_dialog',
           initialEntryMode: DatePickerEntryMode.calendarOnly,
-          initialDate: DateTime.fromMillisecondsSinceEpoch(arguments! as int),
-          firstDate: DateTime(2021),
-          lastDate: DateTime(2022),
+          initialDate: DateTime.now(),
+          firstDate: DateTime(DateTime.now().year-5),
+          lastDate: DateTime(DateTime.now().year+20),
         );
       },
     );
@@ -84,14 +65,20 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
         _restorableDatePickerRouteFuture, 'date_picker_route_future');
   }
 
+  List<TextEditingController> _controller = [
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: '')
+  ];
+
   void _selectDate(DateTime? newSelectedDate) {
     if (newSelectedDate != null) {
       setState(() {
         _selectedDate.value = newSelectedDate;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              'Selected: ${_selectedDate.value.day}/${_selectedDate.value.month}/${_selectedDate.value.year}'),
-        ));
+        _controller[2].text = "${_selectedDate.value.year}-${_selectedDate.value.month}-${_selectedDate.value.day} 00:00:00";
+        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        //   content: Text(_controller[2].text),
+        // ));
       });
     }
   }
@@ -102,17 +89,15 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
   ];
   List<List<String>> makeData = [
     ["id", "Nomor",  "Lokasi", "Tanggal Kadaluarsa", "Timestamp"],
-    // ["id", "Nomor",  "Lokasi", "Tanggal Kadaluarsa", "Timestamp"],
   ];
   
   
-  late DataAparAPI currentData = DataAparAPI(status: "", pesan: "", data: makeData);
+  late DataAPI currentData = DataAPI(status: "", pesan: "", data: makeData);
 
   @override
   void initState() {
     super.initState();
     updateValue();
-    // getEndpoint();
     timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => updateValue());
   }
 
@@ -130,13 +115,9 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
         var respon = Json.tryDecode(response.body);
         if (this.mounted) {
           setState(() {
-            currentData = DataAparAPI.fromJson(respon);
-            // currentData = FromAPI.fromJson(Json.tryDecode(response.body));
-            // _currentSliderValue = double.parse(
-            //     currentData.kecerahan_lampu![_selectedIndex].kecerahan_lampu);
+            currentData = DataAPI.fromJson(respon);
           });
         }
-        // print(currentData.data);
       }
     } on Exception catch (_) {}
   }
@@ -249,6 +230,9 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
                       ),
                     ),
                     onPressed: (){
+                          setState(() {
+                            _controller[2].text = "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day} ${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}";
+                          });
                           Alert(
                             context: context,
                             title: "Tambahkan Data",
@@ -259,6 +243,7 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
                                     // icon: Icon(Icons.account_circle),
                                     labelText: 'Nomor',
                                   ),
+                                  controller: _controller[0],
                                 ),
                                 TextField(
                                   // obscureText: true,
@@ -266,13 +251,22 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
                                     // icon: Icon(Icons.lock),
                                     labelText: 'Lokasi',
                                   ),
+                                  controller: _controller[1],
                                 ),
                                 Padding(padding: EdgeInsets.all(10)),
                                 OutlinedButton(
                                   onPressed: () {
                                     _restorableDatePickerRouteFuture.present();
                                   },
-                                  child: const Text('Tanggal Kadaluarsa'),
+                                  child: const Text('Pilih Tanggal Kadaluarsa'),
+                                ),
+                                TextField(
+                                  // obscureText: true,
+                                  decoration: InputDecoration(
+                                    // icon: Icon(Icons.lock),
+                                    labelText: 'Tanggal Kadaluarsa',
+                                  ),
+                                  controller: _controller[2],
                                 ),
                                 // TextField(
                                 //   // obscureText: true,
@@ -285,11 +279,22 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
                             ),
                             buttons: [
                               DialogButton(
-                                onPressed: () => Navigator.pop(context),
                                 child: Text(
                                   "Submit",
                                   style: TextStyle(color: Colors.white, fontSize: 20),
                                 ),
+                                onPressed: () async{                                  
+                                  var url = Uri.parse("http://${globals.endpoint}/api_apar.php?create&nomor=${_controller[0].text}&lokasi=${_controller[1].text}&kadaluarsa=${_controller[2].text}");  
+                                  try {
+                                    final response = await http.get(url).timeout(
+                                      const Duration(seconds: 1),
+                                      onTimeout: () {
+                                        return http.Response('Error', 408);
+                                      },
+                                    );
+                                  } on Exception catch (_) {}
+                                  Navigator.pop(context);
+                                },
                               )
                             ]).show();
                     },
@@ -409,12 +414,42 @@ class SimpleTablePage extends StatelessWidget {
                   ],
                 ),
                 buttons: [
-                  DialogButton(
-                    onPressed: () => Navigator.pop(context),
+                  DialogButton(         
+                    color: Colors.red,   
+                    child: Text(
+                      "Delete",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    onPressed: () async {
+                      var url = Uri.parse("http://${globals.endpoint}/api_apar.php?delete&id=${_controller[0].text}");  
+                      try {
+                        final response = await http.get(url).timeout(
+                          const Duration(seconds: 1),
+                          onTimeout: () {
+                            return http.Response('Error', 408);
+                          },
+                        );
+                      } on Exception catch (_) {}
+                      Navigator.pop(context);
+                    }
+                  ),
+                  DialogButton(            
                     child: Text(
                       "Update",
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
+                    onPressed: () async {
+                      var url = Uri.parse("http://${globals.endpoint}/api_apar.php?update&id=${_controller[0].text}&nomor=${_controller[1].text}&lokasi=${_controller[2].text}&kadaluarsa=${_controller[3].text}");  
+                      try {
+                        final response = await http.get(url).timeout(
+                          const Duration(seconds: 1),
+                          onTimeout: () {
+                            return http.Response('Error', 408);
+                          },
+                        );
+                      } on Exception catch (_) {}
+                      Navigator.pop(context);
+                    }
                   )
                 ]).show();
             }, 
