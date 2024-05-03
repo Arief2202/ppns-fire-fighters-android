@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last
+// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last, unused_local_variable, must_be_immutable, prefer_final_fields, use_key_in_widget_constructors, unnecessary_this, depend_on_referenced_packages, non_constant_identifier_names, curly_braces_in_flow_control_structures, unnecessary_brace_in_string_interps
 
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -6,14 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:ppns_fire_fighters/globals.dart' as globals;
 import 'package:http/http.dart' as http;
-import 'package:horizontal_data_table/horizontal_data_table.dart';
-import 'dart:developer';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
 import 'package:ppns_fire_fighters/admin/DataModel.dart';
-import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:month_year_picker/month_year_picker.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:excel/excel.dart';
@@ -32,6 +28,7 @@ class HasilHydrantOHB extends StatefulWidget {
 
 
 class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin {
+  @override
   String? get restorationId => widget.restorationId;
   final RestorableDateTime _selectedDate =
       RestorableDateTime(DateTime(2021, 7, 25));
@@ -160,7 +157,7 @@ class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin
   Widget build(BuildContext context) {
     return Scaffold(
     body: Container(
-      decoration: new BoxDecoration(color: Colors.white),
+      decoration: BoxDecoration(color: Colors.white),
       child: Stack(
         children: <Widget>[
           Align(
@@ -218,7 +215,7 @@ class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin
               alignment: Alignment.topLeft,
               child: Column(children: [
                 Container(
-                  margin: new EdgeInsets.only(left: 30.0, right: 20.0, top: 40),
+                  margin: EdgeInsets.only(left: 30.0, right: 20.0, top: 40),
                   child: Column(
                     children: <Widget>[
                       Image.asset(
@@ -234,7 +231,7 @@ class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin
               alignment: Alignment.topLeft,
               child: Column(children: [
                 Container(
-                  margin: new EdgeInsets.only(left: 20.0, right: 10.0, top: 135),
+                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 135),
                   child: 
                       Text(
                         "Hasil Inspeksi Apar",
@@ -256,7 +253,7 @@ class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin
               alignment: Alignment.topRight,
               child: Column(children: [
                 Container(
-                  margin: new EdgeInsets.only(left: 30.0, right: 10.0, top: 123),
+                  margin: EdgeInsets.only(left: 30.0, right: 10.0, top: 123),
                   child: ElevatedButton(
                     child: Text(
                       "Export Excel",
@@ -298,7 +295,6 @@ class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin
                         Directory appDocDirectory = await getApplicationDocumentsDirectory();
                         var dir = "/storage/emulated/0/ppns_fire_fighters/export/${inspeksi}_inspeksi_apar_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
                         // var dir = "${appDocDirectory.path}/export/${inspeksi}_inspeksi_apar_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
-                        print(dir);
                         File(join(dir))
                           ..createSync(recursive: true)
                           ..writeAsBytesSync(fileBytes!);
@@ -317,7 +313,7 @@ class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin
               alignment: Alignment.topLeft,
               child: Column(children: [
                 Container(
-                  margin: new EdgeInsets.only(left: 20.0, right: 10.0, top: 170),
+                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 170),
                   child: ElevatedButton(
                     child: Text(
                       "${monthName[selectedDate.month-1]} ${selectedDate.year}",
@@ -333,7 +329,7 @@ class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin
                           lastDate: DateTime(DateTime.now().year+1),
                         );
                         setState(() {
-                          if(selected != null) selectedDate = selected!;
+                          if(selected != null) selectedDate = selected;
                         });
                         updateValue();
                     },
@@ -347,7 +343,7 @@ class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin
               alignment: Alignment.topRight,
               child: Column(children: [
                 Container(
-                  margin: new EdgeInsets.only(left: 20.0, right: 10.0, top: 170),
+                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 170),
                   height: 48,
                   width: MediaQuery.of(context).size.width-200,
                   child: DropdownButton(
@@ -385,8 +381,8 @@ class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height-220,
-                  margin: new EdgeInsets.only(top: 220),
-                  decoration: new BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
+                  margin: EdgeInsets.only(top: 220),
+                  decoration: BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
                   child: SimpleTablePage(
                       titleColumn: inspeksi == "sudah" ? titleColumn : titleColumn2,
                       data: inspeksi == "sudah" ? currentData.data : currentDataApar.data,
@@ -411,31 +407,23 @@ class SimpleTablePage extends StatelessWidget {
 
   final List<List<String>> data;
   final List<String> titleColumn;
-  List<TextEditingController> _controller = [
-    TextEditingController(text: ''),
-    TextEditingController(text: ''),
-    TextEditingController(text: ''),
-    TextEditingController(text: ''),
-    TextEditingController(text: '')
-  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StickyHeadersTable(
-        
         columnsLength: titleColumn.length,
         rowsLength: data.length,
         columnsTitleBuilder: (i) => Text(titleColumn[i]),
         contentCellBuilder: (i, j) => Text(inspeksi == 'sudah' ? (i > 1 ? data[j][i+1] : data[j][i]) : (i > 0 ? data[j][i+1] : data[j][i])),
-        legendCell: Text('ID Apar'),
+        legendCell: Text('Nomor Apar'),
         cellDimensions: CellDimensions.fixed(
-          contentCellWidth: 100, 
+          contentCellWidth: 120, 
           contentCellHeight: 50, 
           stickyLegendWidth: 85, 
           stickyLegendHeight: 50
         ),
         rowsTitleBuilder: (i) => Text(inspeksi == 'sudah' ? data[i][2] : data[i][1]),
-        
       ),
     );
   }

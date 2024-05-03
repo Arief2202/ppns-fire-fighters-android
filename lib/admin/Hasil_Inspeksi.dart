@@ -7,9 +7,7 @@ import 'package:ppns_fire_fighters/admin/Hasil_Inspeksi/hydrantOHB.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:ppns_fire_fighters/admin/Hasil_Inspeksi/apar.dart';
 import 'package:ppns_fire_fighters/globals.dart' as globals;
-import 'package:http/http.dart' as http;
 
 class HasilInspeksi extends StatefulWidget {
   HasilInspeksi({Key? key}) : super(key: key);
@@ -27,7 +25,7 @@ class _HasilInspeksiState extends State<HasilInspeksi> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: new BoxDecoration(color: Colors.white),
+      decoration: BoxDecoration(color: Colors.white),
       child: Stack(
         children: <Widget>[
           Align(
@@ -85,7 +83,7 @@ class _HasilInspeksiState extends State<HasilInspeksi> {
               alignment: Alignment.topLeft,
               child: Column(children: [
                 Container(
-                  margin: new EdgeInsets.only(left: 30.0, right: 20.0, top: 40),
+                  margin: EdgeInsets.only(left: 30.0, right: 20.0, top: 40),
                   child: Column(
                     children: <Widget>[
                       Image.asset(

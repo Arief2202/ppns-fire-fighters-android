@@ -3,14 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:ppns_fire_fighters/admin/Hasil_Inspeksi.dart';
 import 'package:ppns_fire_fighters/admin/Users.dart';
-import 'package:ppns_fire_fighters/loginPage.dart';
 import 'package:ppns_fire_fighters/admin/DataAparHydrant.dart';
-import 'package:ppns_fire_fighters/user/Dashboard.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:ppns_fire_fighters/globals.dart' as globals;
-import 'package:http/http.dart' as http;
 
 class DashboardAdmin extends StatefulWidget {
   DashboardAdmin({Key? key}) : super(key: key);
@@ -84,7 +81,7 @@ class _DashboardAdminState extends State<DashboardAdmin> {
             alignment: Alignment.topLeft,
             child: Column(children: [
               Container(
-                margin: new EdgeInsets.only(left: 30.0, right: 20.0, top: 40),
+                margin: EdgeInsets.only(left: 30.0, right: 20.0, top: 40),
                 child: Column(
                   children: <Widget>[
                     Image.asset(
@@ -287,65 +284,3 @@ class _DashboardAdminState extends State<DashboardAdmin> {
     );
   }
 }
-
-// // ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables
-// import 'package:flutter/material.dart';
-// import 'package:rflutter_alert/rflutter_alert.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:flutter_phoenix/flutter_phoenix.dart';
-// import 'package:ppns_fire_fighters/globals.dart' as globals;
-
-// class DashboardAdmin extends StatefulWidget {
-//   DashboardAdmin({Key? key}) : super(key: key);
-
-//   @override
-//   _DashboardAdminState createState() => _DashboardAdminState();
-// }
-
-// class _DashboardAdminState extends State<DashboardAdmin> {
-//   // final List<DashboardAdmin> doneTourismPlaceList = [];
-//   @override
-//   Widget build(BuildContext context) {
-//     return Stack(
-//       children: <Widget>[
-//         Center(
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: <Widget>[
-//               Image.asset(
-//                 'assets/img/logo.png',
-//                 width: MediaQuery.of(context).size.width,
-//               ),
-//               DialogButton(
-//                 child: Text(
-//                   "Logout",
-//                   style: TextStyle(color: Colors.white, fontSize: 20),
-//                 ),
-//                 onPressed: () async {
-//                   // Navigator.pop(context);
-//                   final prefs = await SharedPreferences.getInstance();
-//                   await prefs.remove('user_id');
-//                   await prefs.remove('user_role');
-//                   await prefs.remove('user_name');
-//                   await prefs.remove('user_email');
-//                   await prefs.remove('user_password');
-//                   await prefs.remove('user_card_id');
-
-//                   setState(() {
-//                     globals.user_id = "";
-//                     globals.user_name = "";
-//                     globals.user_email = "";
-//                     globals.user_password = "";
-//                     globals.user_card_id = "";
-//                     globals.isLoggedIn = false;
-//                   });
-//                   // Navigator.pop(context);
-//                   Phoenix.rebirth(context);
-//               }),
-//             ],
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }

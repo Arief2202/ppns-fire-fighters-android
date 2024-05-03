@@ -104,64 +104,6 @@ List<List<String>> objectToArrayUser(List<dynamic> data) {
   return output;
 }
 
-// List<List<String>> makeData() {
-//   final List<List<String>> output = [];
-//   for (int i = 0; i < columns; i++) {
-//     final List<String> row = [];
-//     for (int j = 0; j < rows; j++) {
-//       row.add('Col$j Row$i');
-//     }
-//     output.add(row);
-//   }
-//   return output;
-// }
-
-// class DataHydrantModel{
-//   DataHydrantModel({
-//     required this.id,
-//     required this.nomor,
-//     required this.lokasi,
-//     required this.tanggal_kadaluarsa,
-//     required this.timestamp
-//   });
-//   String id;
-//   String nomor;
-//   String lokasi;
-//   String tanggal_kadaluarsa;
-//   String timestamp;
-
-//   factory DataHydrantModel.fromJson(Map<String, dynamic> json) => DataHydrantModel(
-//     id: json["id"],
-//     nomor: json["nomor"],
-//     lokasi: json["lokasi"],
-//     tanggal_kadaluarsa: json["tanggal_kadaluarsa"],
-//     timestamp: json["timestamp"]
-//   );
-// }
-
-// class DataAparModel{
-//   DataAparModel({
-//     required this.id,
-//     required this.nomor,
-//     required this.lokasi,
-//     required this.tanggal_kadaluarsa,
-//     required this.timestamp
-//   });
-//   String id;
-//   String nomor;
-//   String lokasi;
-//   String tanggal_kadaluarsa;
-//   String timestamp;
-
-//   factory DataAparModel.fromJson(Map<String, dynamic> json) => DataAparModel(
-//     id: json["id"],
-//     nomor: json["nomor"],
-//     lokasi: json["lokasi"],
-//     tanggal_kadaluarsa: json["tanggal_kadaluarsa"],
-//     timestamp: json["timestamp"]
-//   );
-// }
-
 class Json {
   static String? tryEncode(data) {
     try {

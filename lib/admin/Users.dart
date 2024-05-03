@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last
+// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last, unused_local_variable, prefer_final_fields, unnecessary_this, unnecessary_null_comparison
 
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -6,11 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:ppns_fire_fighters/globals.dart' as globals;
 import 'package:http/http.dart' as http;
-import 'package:horizontal_data_table/horizontal_data_table.dart';
-import 'dart:developer';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
 import 'package:ppns_fire_fighters/admin/DataModel.dart';
-import 'package:intl/intl.dart';
 import 'dart:async';
 
 
@@ -83,7 +80,6 @@ class _UsersState extends State<Users> {
         if (this.mounted) {
           setState(() {
             currentData = DataUserAPI.fromJson(respon);
-            print(currentData);
           });
         }
       }
@@ -93,7 +89,7 @@ class _UsersState extends State<Users> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: new BoxDecoration(color: Colors.white),
+      decoration: BoxDecoration(color: Colors.white),
       child: Stack(
         children: <Widget>[
           Align(
@@ -151,7 +147,7 @@ class _UsersState extends State<Users> {
               alignment: Alignment.topLeft,
               child: Column(children: [
                 Container(
-                  margin: new EdgeInsets.only(left: 30.0, right: 20.0, top: 40),
+                  margin: EdgeInsets.only(left: 30.0, right: 20.0, top: 40),
                   child: Column(
                     children: <Widget>[
                       Image.asset(
@@ -167,7 +163,7 @@ class _UsersState extends State<Users> {
               alignment: Alignment.topLeft,
               child: Column(children: [
                 Container(
-                  margin: new EdgeInsets.only(left: 20.0, right: 10.0, top: 135),
+                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 135),
                   child: 
                       Text(
                         "Data User",
@@ -189,7 +185,7 @@ class _UsersState extends State<Users> {
               alignment: Alignment.topRight,
               child: Column(children: [
                 Container(
-                  margin: new EdgeInsets.only(left: 30.0, right: 10.0, top: 123),
+                  margin: EdgeInsets.only(left: 30.0, right: 10.0, top: 123),
                   child: ElevatedButton(
                     child: Text(
                       "Tambahkan Data",
@@ -269,8 +265,8 @@ class _UsersState extends State<Users> {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height-180,
-                  margin: new EdgeInsets.only(top: 180),
-                  decoration: new BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
+                  margin: EdgeInsets.only(top: 180),
+                  decoration: BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
                   child: SimpleTablePageState(
                       // titleColumn: titleColumn,
                       // data: currentData.data,

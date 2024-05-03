@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last
+// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last, unused_local_variable, must_be_immutable, prefer_final_fields, use_key_in_widget_constructors, unnecessary_this
 
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -22,6 +22,7 @@ class DataHydrantIHB extends StatefulWidget {
 
 
 class _DataHydrantIHBState extends State<DataHydrantIHB> with RestorationMixin {
+  @override
   String? get restorationId => widget.restorationId;
   final RestorableDateTime _selectedDate =
       RestorableDateTime(DateTime(2021, 7, 25));
@@ -120,7 +121,7 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> with RestorationMixin {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: new BoxDecoration(color: Colors.white),
+      decoration: BoxDecoration(color: Colors.white),
       child: Stack(
         children: <Widget>[
           Align(
@@ -178,7 +179,7 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> with RestorationMixin {
               alignment: Alignment.topLeft,
               child: Column(children: [
                 Container(
-                  margin: new EdgeInsets.only(left: 30.0, right: 20.0, top: 40),
+                  margin: EdgeInsets.only(left: 30.0, right: 20.0, top: 40),
                   child: Column(
                     children: <Widget>[
                       Image.asset(
@@ -194,7 +195,7 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> with RestorationMixin {
               alignment: Alignment.topLeft,
               child: Column(children: [
                 Container(
-                  margin: new EdgeInsets.only(left: 20.0, right: 10.0, top: 135),
+                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 135),
                   child: 
                       Text(
                         "Data Hydrant IHB",
@@ -216,7 +217,7 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> with RestorationMixin {
               alignment: Alignment.topRight,
               child: Column(children: [
                 Container(
-                  margin: new EdgeInsets.only(left: 30.0, right: 10.0, top: 123),
+                  margin: EdgeInsets.only(left: 30.0, right: 10.0, top: 123),
                   child: ElevatedButton(
                     child: Text(
                       "Tambahkan Data",
@@ -305,8 +306,8 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> with RestorationMixin {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height-180,
-                  margin: new EdgeInsets.only(top: 180),
-                  decoration: new BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
+                  margin: EdgeInsets.only(top: 180),
+                  decoration: BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
                   child: SimpleTablePage(
                       titleColumn: titleColumn,
                       data: currentData.data,
@@ -358,7 +359,6 @@ class SimpleTablePage extends StatelessWidget {
           padding: EdgeInsets.only(left: 10),
           child: ElevatedButton(
             onPressed: (){
-              print(data[i][0]);
               _controller[0].text = data[i][0];
               _controller[1].text = data[i][1];
               _controller[2].text = data[i][2];
