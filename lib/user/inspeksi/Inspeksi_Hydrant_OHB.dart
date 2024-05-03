@@ -1,13 +1,12 @@
-// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last
+// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last, non_constant_identifier_names, no_logic_in_create_state, unnecessary_brace_in_string_interps, unnecessary_string_interpolations, must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:ppns_fire_fighters/DisabledInput.dart';
+import 'package:ppns_fire_fighters/RadioForm.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:ppns_fire_fighters/globals.dart' as globals;
 import 'package:http/http.dart' as http;
 import 'dart:developer';
-import 'dart:convert';
 
 class InspeksiHydrantOHB extends StatefulWidget {
   InspeksiHydrantOHB({required this.nomor, required this.id, Key? key}) : super(key: key);
@@ -36,25 +35,22 @@ class _InspeksiHydrantOHBState extends State<InspeksiHydrantOHB> {
   ];
   String nomor;
 
-  String kondisi_tabung = "";
-  String segel_pin = "";
-  String tuas_pegangan= "";
-  String label_segitiga = "";
-  String label_instruksi = "";
+  String kondisi_kotak = "";
+  String posisi_kotak = "";
+  String kondisi_nozzle= "";
   String kondisi_selang = "";
-  String tekanan_tabung = "";
-  String posisi = "";
+  String jenis_selang = "";
+  String kondisi_coupling = "";
+  String tuas_pembuka = "";
+  String kondisi_outlet = "";
+  String penutup_cop = "";
+  String flushing_hydrant = "";
+  String tekanan_hydrant = "";
 
   @override
   void initState() {
     super.initState();
 
-  }
-
-  void updateState(String _var){
-    setState(() {
-      kondisi_tabung = _var;
-    });
   }
 
   @override
@@ -63,7 +59,7 @@ class _InspeksiHydrantOHBState extends State<InspeksiHydrantOHB> {
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Container(
-          decoration: new BoxDecoration(color: Colors.white),
+          decoration: BoxDecoration(color: Colors.white),
           child: Stack(
             children: <Widget>[
               Align(
@@ -71,7 +67,7 @@ class _InspeksiHydrantOHBState extends State<InspeksiHydrantOHB> {
                   child: Column(children: [
                     Container(
                       margin:
-                          new EdgeInsets.only(top: 35),
+                          EdgeInsets.only(top: 35),
                       child: Column(
                         children: <Widget>[
                           Image.asset(
@@ -86,9 +82,9 @@ class _InspeksiHydrantOHBState extends State<InspeksiHydrantOHB> {
                   alignment: Alignment.topCenter,
                   child: Column(children: [
                     Container(
-                      margin: new EdgeInsets.only(top: 110),
+                      margin: EdgeInsets.only(top: 110),
                       child: Text(
-                        "Inspeksi APAR",
+                        "Inspeksi Hydrant OHB",
                         style: TextStyle(
                             fontFamily: "SanFrancisco",
                             decoration: TextDecoration.none,
@@ -106,7 +102,7 @@ class _InspeksiHydrantOHBState extends State<InspeksiHydrantOHB> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height - 215,
-                      margin: new EdgeInsets.only(top: 150),
+                      margin: EdgeInsets.only(top: 150),
                       // decoration: new BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
                       child: SingleChildScrollView(
                         child: Column(
@@ -123,14 +119,17 @@ class _InspeksiHydrantOHBState extends State<InspeksiHydrantOHB> {
                                   disabledInput("Email Inspektor", "${globals.user_email}"),   
                                   SizedBox(height: 20),
                                   disabledInput("Tanggal Inspeksi", "${now.day} ${monthName[now.month-1]} ${now.year}"),                
-                                  Questions(title: "Kondisi Tabung :", option: ["Baik", "Rusak"], onChange: (String? value) {setState(() {kondisi_tabung = value!;});log("Kondisi Tabung : ${kondisi_tabung}");}),
-                                  Questions(title: "Segel Pin :", option: ["Terpasang", "Lepas", "Tidak ada pin"], onChange: (String? value) {setState(() {segel_pin = value!;});log("Segel Pin : ${segel_pin}");}),
-                                  Questions(title: "Tuas Pegangan (Handle) :", option: ["Baik", "Rusak"], onChange: (String? value) {setState(() {tuas_pegangan = value!;});log("Tuas pegangan : ${tuas_pegangan}");}),
-                                  Questions(title: "Label (Tanda Segitiga Merah) :", option: ["Tersedia", "Tidak Tersedia"], onChange: (String? value) {setState(() {label_segitiga = value!;});log("Label Segitiga : ${label_segitiga}");}),
-                                  Questions(title: "Label (Instruksi Penggunaan APAR) :", option: ["Terbaca", "Tidak Terbaca", "Tidak Ada"], onChange: (String? value) {setState(() {label_instruksi = value!;});log("Label Instruksi : ${label_instruksi}");}),
-                                  Questions(title: "Kondisi Selang :", option: ["Baik", "Rusak", "Lainnya"], onChange: (String? value) {setState(() {kondisi_selang = value!;});log("Kondisi Selang : ${kondisi_selang}");}),
-                                  Questions(title: "Tekanan Tabung (Posisi Jarum) :", option: ["Tepat di hijau", "Kurang dari hijau", "Lebih dari hijau", "Tidak tersedia"], onChange: (String? value) {setState(() {tekanan_tabung = value!;});log("Tekanan Tabung : ${tekanan_tabung}");}),
-                                  Questions(title: "Posisi Alat Pemadam Api :", option: ["Tidak terhalang / Mudah Dijangkau / Terlihat", "Terhalang"], onChange: (String? value) {setState(() {posisi = value!;});log("Posisi : ${posisi}");}),
+                                  RadioForm(title: "Kondisi Kotak :", option: ["Bersih", "Kotor", "Lainnya"], onChange: (String? value) {setState(() {kondisi_kotak = value!;});log("Kondisi Kotak : ${kondisi_kotak}");}),
+                                  RadioForm(title: "Posisi Kotak :", option: ["Tidak Terhalang", "Terhalang"], onChange: (String? value) {setState(() {posisi_kotak = value!;});log("Posisi Kotak : ${posisi_kotak}");}),
+                                  RadioForm(title: "Kondisi Nozzle :", option: ["Baik", "Rusak", "Lainnya"], onChange: (String? value) {setState(() {kondisi_nozzle = value!;});log("Kondisi Nozzle : ${kondisi_nozzle}");}),
+                                  RadioForm(title: "Kondisi Selang :", option: ["Baik", "Bocor", "Lainnya"], onChange: (String? value) {setState(() {kondisi_selang = value!;});log("Kondisi Selang : ${kondisi_selang}");}),
+                                  RadioForm(title: "Jenis Selang :", option: ["Kanvas hose", "Rubber hose"], onChange: (String? value) {setState(() {jenis_selang = value!;});log("Jenis Selang : ${jenis_selang}");}),
+                                  RadioForm(title: "Kondisi Coupling :", option: ["Baik", "Rusak", "Lainnya"], onChange: (String? value) {setState(() {kondisi_coupling = value!;});log("Kondisi Coupling : ${kondisi_coupling}");}),
+                                  RadioForm(title: "Tuas Pembuka Pillar Hydrant : ", option: ["Tersedia", "Tidak Tersedia"], onChange: (String? value) {setState(() {tuas_pembuka = value!;});log("Tuas Pembuka Pillar Hydrant : ${tuas_pembuka}");}),
+                                  RadioForm(title: "Kondisi Outlet Cop dan Bonet Pillar Hydrant :", option: ["Baik", "Bocor", "Lainnya"], onChange: (String? value) {setState(() {kondisi_outlet = value!;});log("Kondisi Outlet Cop dan Bonet Pillar Hydrant : ${kondisi_outlet}");}),
+                                  RadioForm(title: "Penutup Cop Hydrant :", option: ["Baik", "Retak", "Lainnya"], onChange: (String? value) {setState(() {penutup_cop = value!;});log("Penutup Cop Hydrant : ${penutup_cop}");}),
+                                  RadioForm(title: "Apakah akan dilakukan flushing Hydrant :", option: ["Ya", "Tidak"], onChange: (String? value) {setState(() {flushing_hydrant = value!;});log("Apakah akan dilakukan flushing Hydrant : ${flushing_hydrant}");}),
+                                  RadioForm(title: "Berapa Tekanan Jalur Hydrant :", option: ["Tidak ada Pressure Gauge", "Lainnya"], onChange: (String? value) {setState(() {tekanan_hydrant = value!;});log("Berapa Tekanan Jalur Hydrant : ${tekanan_hydrant}");}),
                                   Padding(padding: EdgeInsets.all(20))
                                 ],
                               ),
@@ -145,7 +144,7 @@ class _InspeksiHydrantOHBState extends State<InspeksiHydrantOHB> {
                   alignment: Alignment.bottomRight,
                   child: Column(children: [
                     Container(
-                      margin: new EdgeInsets.only(left:20, right: 20, top: MediaQuery.of(context).size.height-60),
+                      margin: EdgeInsets.only(left:20, right: 20, top: MediaQuery.of(context).size.height-60),
                       child: 
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -153,7 +152,7 @@ class _InspeksiHydrantOHBState extends State<InspeksiHydrantOHB> {
                             foregroundColor: Colors.white
                           ),
                           onPressed: () async{     
-                            var url = Uri.parse("http://${globals.endpoint}/api_inspeksi_apar.php?create&user_id=${globals.user_id}&apar_id=${widget.id}&kondisi_tabung=${kondisi_tabung}&segel_pin=${segel_pin}&tuas_pegangan=${tuas_pegangan}&label_segitiga=${label_segitiga}&label_instruksi=${label_instruksi}&kondisi_selang=${kondisi_selang}&tekanan_tabung=${tekanan_tabung}&posisi=${posisi}");  
+                            var url = Uri.parse("http://${globals.endpoint}/api_inspeksi_ohb.php?create&user_id=${globals.user_id}&hydrant_id=${widget.id}&kondisi_kotak=${kondisi_kotak}&posisi_kotak=${posisi_kotak}&kondisi_nozzle=${kondisi_nozzle}&kondisi_selang=${kondisi_selang}&jenis_selang=${jenis_selang}&kondisi_coupling=${kondisi_coupling}&tuas_pembuka=${tuas_pembuka}&kondisi_outlet=${kondisi_outlet}&penutup_cop=${penutup_cop}&flushing_hydrant=${flushing_hydrant}&tekanan_hydrant=${tekanan_hydrant}");  
                             try {
                               final response = await http.get(url).timeout(
                                 const Duration(seconds: 1),
@@ -166,6 +165,7 @@ class _InspeksiHydrantOHBState extends State<InspeksiHydrantOHB> {
                                   Alert(
                                     context: context,
                                     type: AlertType.success,
+                                    onWillPopActive: true,
                                     title: "Inspeksi Berhasil!",
                                     buttons: [
                                       DialogButton(
@@ -214,105 +214,6 @@ class _InspeksiHydrantOHBState extends State<InspeksiHydrantOHB> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-Widget disabledInput(String title, String noApar){
-  return Container(
-      padding: EdgeInsets.only(left: 20, right: 30),
-      height: 30,
-      child: TextField(
-          enabled: false, 
-          style: TextStyle(fontSize: 14),
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: title,
-            labelStyle: TextStyle(fontSize: 14),
-            contentPadding: EdgeInsets.only(left: 10, bottom: 10)
-            // errorText: _error[1] ? 'Value Can\'t Be Empty' : null,
-          ),
-          controller: TextEditingController(text: "${noApar}"),
-        )
-    );
-}
-
-class Questions extends StatefulWidget {
-  Questions({required this.title, required this.option, required this.onChange,Key? key}) : super(key: key);
-  List<String> option;
-  String title;
-  final Function onChange;
-  @override
-  _QuestionsState createState() => _QuestionsState(option: option, title: title);
-}
-
-class _QuestionsState  extends State<Questions> {
-  _QuestionsState({required this.title, required this.option});
-  List<String> option;
-  String title;
-  String output = "";
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    setState(() {
-      output = option.first;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.onChange(output);
-    });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) { 
-    return Container(
-      child : Column(
-        children: [
-          SizedBox(
-            width: 500,
-            height: 30,
-            child: ListTile(
-              title: Text(title),
-            ),
-          ),
-          for(int i=0; i<option.length; i++)
-            SizedBox(
-              width: 500,
-              height: 30,
-              child: ListTile(
-                title: Text(option[i]),
-                leading: Radio<String>(
-                  value: option[i],
-                  groupValue: output,
-                  onChanged: (String? value) {
-                    setState(() {
-                      output = value!;
-                    });
-                    if(output != "Lainnya")widget.onChange(value);
-                  },
-                ),
-              ),
-            ),
-            if(output == "Lainnya") Container(
-              margin: EdgeInsets.only(top: 20, left:30, right: 30),
-              // height: 60,
-              child: TextField(
-                obscureText: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Lainnya',
-                  labelStyle: TextStyle(fontSize: 20),
-                  // errorText: _error[1] ? 'Value Can\'t Be Empty' : null,
-                ),
-                onChanged: (value){
-                  if(value != null && value != ""){
-                    widget.onChange(value);
-                  }
-                },
-              ), // controller: _data[1],
-            ),
-        ]
       ),
     );
   }

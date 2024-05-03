@@ -1,24 +1,7 @@
-// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last
+// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last, non_constant_identifier_names, no_logic_in_create_state, unnecessary_brace_in_string_interps, unnecessary_string_interpolations, must_be_immutable, avoid_unnecessary_containers
 
 import 'package:flutter/material.dart';
-import 'package:ppns_fire_fighters/user/inspeksi/Inspeksi_Apar.dart';
 import 'package:ppns_fire_fighters/user/input_nomor.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:ppns_fire_fighters/globals.dart' as globals;
-import 'package:http/http.dart' as http;
-import 'package:horizontal_data_table/horizontal_data_table.dart';
-import 'dart:developer';
-import 'package:table_sticky_headers/table_sticky_headers.dart';
-
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert' show jsonDecode;
-import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:ppns_fire_fighters/globals.dart' as globals;
 
 
 class TermsCondition extends StatefulWidget {
@@ -73,7 +56,7 @@ class _TermsConditionState extends State<TermsCondition> {
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Container(
-          decoration: new BoxDecoration(color: Colors.white),
+          decoration: BoxDecoration(color: Colors.white),
           child: Stack(
             children: <Widget>[
               
@@ -81,7 +64,7 @@ class _TermsConditionState extends State<TermsCondition> {
                   alignment: Alignment.topCenter,
                   child: Column(children: [
                     Container(
-                      margin: new EdgeInsets.only(top: 40),
+                      margin: EdgeInsets.only(top: 40),
                       child: Column(
                         children: <Widget>[
                           Image.asset(
@@ -97,7 +80,7 @@ class _TermsConditionState extends State<TermsCondition> {
                   alignment: Alignment.topCenter,
                   child: Column(children: [
                     Container(
-                      margin: new EdgeInsets.only(top: 130),
+                      margin: EdgeInsets.only(top: 130),
                       child: 
                           Text(
                             "AS REGULATORY INFORMATION IS USED",
@@ -118,7 +101,7 @@ class _TermsConditionState extends State<TermsCondition> {
                   alignment: Alignment.topCenter,
                   child: Column(children: [
                     Container(
-                      margin: new EdgeInsets.only(top: 140),
+                      margin: EdgeInsets.only(top: 140),
                       child: 
                           Text(
                             nfpa,
@@ -141,7 +124,7 @@ class _TermsConditionState extends State<TermsCondition> {
                      Container(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height-350,
-                        margin: new EdgeInsets.only(left:30, right: 30, bottom: 200 , top: 220),
+                        margin: EdgeInsets.only(left:30, right: 30, bottom: 200 , top: 220),
                         // decoration: new BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
                         child: SingleChildScrollView(
                           child: Column(
@@ -172,7 +155,7 @@ class _TermsConditionState extends State<TermsCondition> {
                   alignment: Alignment.bottomLeft,
                   child: Column(children: [
                     Container(
-                      margin: new EdgeInsets.only(left:20, right: 20, top: MediaQuery.of(context).size.height-120),
+                      margin: EdgeInsets.only(left:20, right: 20, top: MediaQuery.of(context).size.height-120),
                       child: 
                       Row(children: [
                         
@@ -205,7 +188,7 @@ class _TermsConditionState extends State<TermsCondition> {
                   alignment: Alignment.bottomRight,
                   child: Column(children: [
                     Container(
-                      margin: new EdgeInsets.only(left:20, right: 20, top: MediaQuery.of(context).size.height-60),
+                      margin: EdgeInsets.only(left:20, right: 20, top: MediaQuery.of(context).size.height-60),
                       child: 
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(

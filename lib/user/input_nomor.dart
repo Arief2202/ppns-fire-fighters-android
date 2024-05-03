@@ -1,15 +1,12 @@
-// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last
+// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last, must_be_immutable, override_on_non_overriding_member, unnecessary_this, curly_braces_in_flow_control_structures
 
 import 'package:flutter/material.dart';
 import 'package:ppns_fire_fighters/user/inspeksi/Inspeksi_Apar.dart';
 import 'package:ppns_fire_fighters/user/inspeksi/Inspeksi_Hydrant_OHB.dart';
 import 'package:ppns_fire_fighters/user/inspeksi/inspeksi_Hydrant_IHB.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:ppns_fire_fighters/globals.dart' as globals;
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:ppns_fire_fighters/admin/DataModel.dart';
 
 class InputNomor extends StatefulWidget {
@@ -20,9 +17,10 @@ class InputNomor extends StatefulWidget {
 }
 
 class _InputNomorState extends State<InputNomor> {
-  @override
   TextEditingController nomor = TextEditingController(text: '');
   String id = "0";
+
+  @override
   void initState() {
     super.initState();
   }
@@ -35,14 +33,14 @@ class _InputNomorState extends State<InputNomor> {
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Container(
-          decoration: new BoxDecoration(color: Colors.white),
+          decoration: BoxDecoration(color: Colors.white),
           child: Stack(
             children: <Widget>[
               Align(
                   alignment: Alignment.topCenter,
                   child: Column(children: [
                     Container(
-                      margin: new EdgeInsets.only(top: 40),
+                      margin: EdgeInsets.only(top: 40),
                       child: Column(
                         children: <Widget>[
                           Image.asset(
@@ -59,8 +57,7 @@ class _InputNomorState extends State<InputNomor> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height - 180,
-                      margin: new EdgeInsets.only(top: 180),
-// decoration: new BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
+                      margin: EdgeInsets.only(top: 180),
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
@@ -112,7 +109,6 @@ class _InputNomorState extends State<InputNomor> {
                                           url = Uri.parse(
                                               "http://${globals.endpoint}/api_hydrant.php?search&jenis=ihb&nomor=${nomor.text}");
                                         }
-                                        print(url);
                                         try {
                                           final response =
                                               await http.get(url).timeout(
@@ -132,7 +128,6 @@ class _InputNomorState extends State<InputNomor> {
                                                   id = respon['data']['id'];
                                                 });
                                               }
-                                              print(respon);
                                               Alert(
                                                 context: context,
                                                 type: AlertType.success,
@@ -183,7 +178,6 @@ Kadaluarsa : ${respon['data']['tanggal_kadaluarsa']}
                                                   checked = false;
                                                 });
                                               }
-                                              print(respon);
                                               Alert(
                                                 context: context,
                                                 type: AlertType.error,
@@ -262,7 +256,7 @@ Tanggal Inspeksi : ${respon['data_inspeksi']['created_at']}
                   alignment: Alignment.bottomRight,
                   child: Column(children: [
                     Container(
-                      margin: new EdgeInsets.only(
+                      margin: EdgeInsets.only(
                           left: 20,
                           right: 20,
                           top: MediaQuery.of(context).size.height - 60),

@@ -2,14 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:ppns_fire_fighters/user/TermsCondition.dart';
-import 'package:ppns_fire_fighters/user/inspeksi/Inspeksi_Apar.dart';
-import 'package:ppns_fire_fighters/user/inspeksi/Inspeksi_Hydrant_OHB.dart';
-import 'package:ppns_fire_fighters/user/inspeksi/inspeksi_Hydrant_IHB.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:ppns_fire_fighters/globals.dart' as globals;
-import 'package:http/http.dart' as http;
 
 class Dashboard extends StatefulWidget {
   Dashboard({Key? key}) : super(key: key);
