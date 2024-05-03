@@ -36,8 +36,8 @@ class DataUserAPI {
     data: objectToArrayUser(json["data"]),
   );
 }
-class DataInspeksiAPI {
-  DataInspeksiAPI({
+class DataInspeksiAparAPI {
+  DataInspeksiAparAPI({
     required this.status,
     required this.pesan,
     required this.data,
@@ -46,10 +46,42 @@ class DataInspeksiAPI {
   String pesan;
   List<List<String>> data;
   
-  factory DataInspeksiAPI.fromJson(Map<String, dynamic> json) => DataInspeksiAPI(
+  factory DataInspeksiAparAPI.fromJson(Map<String, dynamic> json) => DataInspeksiAparAPI(
     status: json["status"],
     pesan: json["pesan"],
-    data: objectToArrayInspeksi(json["data"]),
+    data: objectToArrayInspeksiApar(json["data"]),
+  );
+}
+class DataInspeksiOHBAPI {
+  DataInspeksiOHBAPI({
+    required this.status,
+    required this.pesan,
+    required this.data,
+  });
+  String status;
+  String pesan;
+  List<List<String>> data;
+  
+  factory DataInspeksiOHBAPI.fromJson(Map<String, dynamic> json) => DataInspeksiOHBAPI(
+    status: json["status"],
+    pesan: json["pesan"],
+    data: objectToArrayInspeksiOHB(json["data"]),
+  );
+}
+class DataInspeksiIHBAPI {
+  DataInspeksiIHBAPI({
+    required this.status,
+    required this.pesan,
+    required this.data,
+  });
+  String status;
+  String pesan;
+  List<List<String>> data;
+  
+  factory DataInspeksiIHBAPI.fromJson(Map<String, dynamic> json) => DataInspeksiIHBAPI(
+    status: json["status"],
+    pesan: json["pesan"],
+    data: objectToArrayInspeksiIHB(json["data"]),
   );
 }
 
@@ -67,7 +99,7 @@ List<List<String>> objectToArray(List<dynamic> data) {
   return output;
 }
 
-List<List<String>> objectToArrayInspeksi(List<dynamic> data) {
+List<List<String>> objectToArrayInspeksiApar(List<dynamic> data) {
   final List<List<String>> output = [];
   for(int a=0; a< data.length; a++){
     final List<String> row = [];
@@ -89,6 +121,55 @@ List<List<String>> objectToArrayInspeksi(List<dynamic> data) {
   }
   return output;
 }
+
+List<List<String>> objectToArrayInspeksiOHB(List<dynamic> data) {
+  final List<List<String>> output = [];
+  for(int a=0; a< data.length; a++){
+    final List<String> row = [];
+    row.add(data[a]['id']);
+    row.add(data[a]['user']['email']);
+    row.add(data[a]['hydrant']['nomor']);
+    row.add(data[a]['hydrant']['lokasi']);
+    row.add(data[a]['hydrant']['tanggal_kadaluarsa']);
+    row.add(data[a]['kondisi_kotak']);
+    row.add(data[a]['posisi_kotak']);
+    row.add(data[a]['kondisi_nozzle']);
+    row.add(data[a]['kondisi_selang']);
+    row.add(data[a]['jenis_selang']);
+    row.add(data[a]['kondisi_coupling']);
+    row.add(data[a]['tuas_pembuka']);
+    row.add(data[a]['kondisi_outlet']);
+    row.add(data[a]['penutup_cop']);
+    row.add(data[a]['flushing_hydrant']);
+    row.add(data[a]['tekanan_hydrant']);
+    row.add(data[a]['created_at']);
+    output.add(row);
+  }
+  return output;
+}
+List<List<String>> objectToArrayInspeksiIHB(List<dynamic> data) {
+  final List<List<String>> output = [];
+  for(int a=0; a< data.length; a++){
+    final List<String> row = [];
+    row.add(data[a]['id']);
+    row.add(data[a]['user']['email']);
+    row.add(data[a]['hydrant']['nomor']);
+    row.add(data[a]['hydrant']['lokasi']);
+    row.add(data[a]['hydrant']['tanggal_kadaluarsa']);
+    row.add(data[a]['kondisi_kotak']);
+    row.add(data[a]['posisi_kotak']);
+    row.add(data[a]['kondisi_nozzle']);
+    row.add(data[a]['kondisi_selang']);
+    row.add(data[a]['jenis_selang']);
+    row.add(data[a]['kondisi_coupling']);
+    row.add(data[a]['kondisi_landing_valve']);
+    row.add(data[a]['kondisi_tray']);
+    row.add(data[a]['created_at']);
+    output.add(row);
+  }
+  return output;
+}
+
 List<List<String>> objectToArrayUser(List<dynamic> data) {
   final List<List<String>> output = [];
   for(int a=0; a< data.length; a++){

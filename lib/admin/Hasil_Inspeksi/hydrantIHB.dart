@@ -89,23 +89,23 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
   DateTime selectedDate = DateTime.now();
   Timer? timer;
   List<String> titleColumn = [
-    "id inspeksi", "Email Inspektor", "Lokasi Apar", "Tanggal Kadaluarsa Apar", "Kondisi Tabung", "Segel Pin", "Tuas Pegangan", "Label Segitiga", "Label Instruksi", "Kondisi Selang", "Tekanan Tabung", "Posisi", "Tanggal Inspeksi"
+    "id inspeksi", "Email Inspektor", "Lokasi Hydrant", "Tanggal Kadaluarsa Hydrant", "Kondisi Kotak", "Posisi Kotak", "Kondisi Nozzle", "Kondisi Selang", "Jenis Selang", "Kondisi Coupling", "Kondisi Landing Valve", "Kondisi Tray", "Tanggal Inspeksi"
   ];
   List<String> titleColumn2 = [
     "id", "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
   ];
   
   List<String> titleColumnExport = [
-    "id inspeksi", "Email Inspektor", "Nomor Apar", "Lokasi Apar", "Tanggal Kadaluarsa Apar", "Kondisi Tabung", "Segel Pin", "Tuas Pegangan", "Label Segitiga", "Label Instruksi", "Kondisi Selang", "Tekanan Tabung", "Posisi", "Tanggal Inspeksi"
+    "id inspeksi", "Email Inspektor", "Nomor Hydrant","Lokasi Hydrant", "Tanggal Kadaluarsa Hydrant", "Kondisi Kotak", "Posisi Kotak", "Kondisi Nozzle", "Kondisi Selang", "Jenis Selang", "Kondisi Coupling", "Kondisi Landing Valve", "Kondisi Tray", "Tanggal Inspeksi"
   ];
   List<String> titleColumnExport2 = [
-    "id", "Nomor Apar", "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
+    "id", "Nomor Hydrant", "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
   ];
 
   List<List<String>> makeData = [];
   
   
-  late DataInspeksiAPI currentData = DataInspeksiAPI(status: "", pesan: "", data: makeData);
+  late DataInspeksiIHBAPI currentData = DataInspeksiIHBAPI(status: "", pesan: "", data: makeData);
   late DataAPI currentDataApar = DataAPI(status: "", pesan: "", data: makeData);
   static List<String> monthName = [
     "Januari",
@@ -133,7 +133,7 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
 
 
   void updateValue() async {
-    var url = Uri.parse("http://${globals.endpoint}/api_inspeksi_apar.php?read&start_date=${selectedDate.year}-${selectedDate.month}-1 00:00:00&end_date=${selectedDate.year}-${selectedDate.month}-31 23:59:59&inspeksi=${inspeksi}");  
+    var url = Uri.parse("http://${globals.endpoint}/api_inspeksi_ihb.php?read&start_date=${selectedDate.year}-${selectedDate.month}-1 00:00:00&end_date=${selectedDate.year}-${selectedDate.month}-31 23:59:59&inspeksi=${inspeksi}");  
     try {
       final response = await http.get(url).timeout(
         const Duration(seconds: 1),
@@ -145,7 +145,7 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
         var respon = Json.tryDecode(response.body);
         if (this.mounted) {
           setState(() {
-            if(inspeksi == "sudah") currentData = DataInspeksiAPI.fromJson(respon);
+            if(inspeksi == "sudah") currentData = DataInspeksiIHBAPI.fromJson(respon);
             else currentDataApar = DataAPI.fromJson(respon);
           });
         }
@@ -293,7 +293,7 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
                         var fileBytes = excel.save();
 
                         Directory appDocDirectory = await getApplicationDocumentsDirectory();
-                        var dir = "/storage/emulated/0/ppns_fire_fighters/export/${inspeksi}_inspeksi_apar_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
+                        var dir = "/storage/emulated/0/ppns_fire_fighters/export/${inspeksi}_inspeksi_hydrant_ihb_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
                         // var dir = "${appDocDirectory.path}/export/${inspeksi}_inspeksi_apar_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
                         File(join(dir))
                           ..createSync(recursive: true)
@@ -416,7 +416,7 @@ class SimpleTablePage extends StatelessWidget {
         rowsLength: data.length,
         columnsTitleBuilder: (i) => Text(titleColumn[i]),
         contentCellBuilder: (i, j) => Text(inspeksi == 'sudah' ? (i > 1 ? data[j][i+1] : data[j][i]) : (i > 0 ? data[j][i+1] : data[j][i])),
-        legendCell: Text('Nomor Apar'),
+        legendCell: Text('No Hydrant'),
         cellDimensions: CellDimensions.fixed(
           contentCellWidth: 120, 
           contentCellHeight: 50, 

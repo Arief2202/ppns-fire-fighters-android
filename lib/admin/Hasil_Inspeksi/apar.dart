@@ -105,7 +105,7 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
   List<List<String>> makeData = [];
   
   
-  late DataInspeksiAPI currentData = DataInspeksiAPI(status: "", pesan: "", data: makeData);
+  late DataInspeksiAparAPI currentData = DataInspeksiAparAPI(status: "", pesan: "", data: makeData);
   late DataAPI currentDataApar = DataAPI(status: "", pesan: "", data: makeData);
   static List<String> monthName = [
     "Januari",
@@ -145,7 +145,7 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
         var respon = Json.tryDecode(response.body);
         if (this.mounted) {
           setState(() {
-            if(inspeksi == "sudah") currentData = DataInspeksiAPI.fromJson(respon);
+            if(inspeksi == "sudah") currentData = DataInspeksiAparAPI.fromJson(respon);
             else currentDataApar = DataAPI.fromJson(respon);
           });
         }

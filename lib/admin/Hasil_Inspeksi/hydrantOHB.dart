@@ -1,5 +1,7 @@
 // ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last, unused_local_variable, must_be_immutable, prefer_final_fields, use_key_in_widget_constructors, unnecessary_this, depend_on_referenced_packages, non_constant_identifier_names, curly_braces_in_flow_control_structures, unnecessary_brace_in_string_interps
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -89,23 +91,23 @@ class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin
   DateTime selectedDate = DateTime.now();
   Timer? timer;
   List<String> titleColumn = [
-    "id inspeksi", "Email Inspektor", "Lokasi Apar", "Tanggal Kadaluarsa Apar", "Kondisi Tabung", "Segel Pin", "Tuas Pegangan", "Label Segitiga", "Label Instruksi", "Kondisi Selang", "Tekanan Tabung", "Posisi", "Tanggal Inspeksi"
+    "id inspeksi", "Email Inspektor", "Lokasi Hydrant", "Tanggal Kadaluarsa Hydrant", "Kondisi Kotak", "Posisi Kotak", "Kondisi Nozzle", "Kondisi Selang", "Jenis Selang", "Kondisi Coupling", "Tuas Pembuka Pillar Hydrant", "Kondisi Outlet Cop dan Bonet Pillar Hydrant", "Penutup Cop Hydrant", "Apakah akan dilakukan flushing Hydrant", "Berapa Tekanan Jalur Hydrant", "Tanggal Inspeksi"
   ];
   List<String> titleColumn2 = [
     "id", "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
   ];
   
   List<String> titleColumnExport = [
-    "id inspeksi", "Email Inspektor", "Nomor Apar", "Lokasi Apar", "Tanggal Kadaluarsa Apar", "Kondisi Tabung", "Segel Pin", "Tuas Pegangan", "Label Segitiga", "Label Instruksi", "Kondisi Selang", "Tekanan Tabung", "Posisi", "Tanggal Inspeksi"
+    "id inspeksi", "Email Inspektor", "Nomor Hydrant", "Lokasi Hydrant", "Tanggal Kadaluarsa Hydrant", "Kondisi Kotak", "Posisi Kotak", "Kondisi Nozzle", "Kondisi Selang", "Jenis Selang", "Kondisi Coupling", "Tuas Pembuka Pillar Hydrant", "Kondisi Outlet Cop dan Bonet Pillar Hydrant", "Penutup Cop Hydrant", "Apakah akan dilakukan flushing Hydrant", "Berapa Tekanan Jalur Hydrant", "Tanggal Inspeksi"
   ];
   List<String> titleColumnExport2 = [
-    "id", "Nomor Apar", "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
+    "id", "Nomor Hydrant", "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
   ];
 
   List<List<String>> makeData = [];
   
   
-  late DataInspeksiAPI currentData = DataInspeksiAPI(status: "", pesan: "", data: makeData);
+  late DataInspeksiOHBAPI currentData = DataInspeksiOHBAPI(status: "", pesan: "", data: makeData);
   late DataAPI currentDataApar = DataAPI(status: "", pesan: "", data: makeData);
   static List<String> monthName = [
     "Januari",
@@ -133,7 +135,8 @@ class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin
 
 
   void updateValue() async {
-    var url = Uri.parse("http://${globals.endpoint}/api_inspeksi_apar.php?read&start_date=${selectedDate.year}-${selectedDate.month}-1 00:00:00&end_date=${selectedDate.year}-${selectedDate.month}-31 23:59:59&inspeksi=${inspeksi}");  
+    var url = Uri.parse("http://${globals.endpoint}/api_inspeksi_ohb.php?read&start_date=${selectedDate.year}-${selectedDate.month}-1 00:00:00&end_date=${selectedDate.year}-${selectedDate.month}-31 23:59:59&inspeksi=${inspeksi}");  
+    print(url);
     try {
       final response = await http.get(url).timeout(
         const Duration(seconds: 1),
@@ -143,9 +146,10 @@ class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin
       );
       if (response.statusCode == 200) {
         var respon = Json.tryDecode(response.body);
+        print(respon);
         if (this.mounted) {
           setState(() {
-            if(inspeksi == "sudah") currentData = DataInspeksiAPI.fromJson(respon);
+            if(inspeksi == "sudah") currentData = DataInspeksiOHBAPI.fromJson(respon);
             else currentDataApar = DataAPI.fromJson(respon);
           });
         }
@@ -293,7 +297,7 @@ class _HasilHydrantOHBState extends State<HasilHydrantOHB> with RestorationMixin
                         var fileBytes = excel.save();
 
                         Directory appDocDirectory = await getApplicationDocumentsDirectory();
-                        var dir = "/storage/emulated/0/ppns_fire_fighters/export/${inspeksi}_inspeksi_apar_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
+                        var dir = "/storage/emulated/0/ppns_fire_fighters/export/${inspeksi}_inspeksi_hydrant_ohb_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
                         // var dir = "${appDocDirectory.path}/export/${inspeksi}_inspeksi_apar_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
                         File(join(dir))
                           ..createSync(recursive: true)
@@ -416,7 +420,7 @@ class SimpleTablePage extends StatelessWidget {
         rowsLength: data.length,
         columnsTitleBuilder: (i) => Text(titleColumn[i]),
         contentCellBuilder: (i, j) => Text(inspeksi == 'sudah' ? (i > 1 ? data[j][i+1] : data[j][i]) : (i > 0 ? data[j][i+1] : data[j][i])),
-        legendCell: Text('Nomor Apar'),
+        legendCell: Text('No Hydrant'),
         cellDimensions: CellDimensions.fixed(
           contentCellWidth: 120, 
           contentCellHeight: 50, 
