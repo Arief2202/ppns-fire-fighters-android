@@ -3,9 +3,10 @@
 import 'package:flutter/material.dart';
 
 class RadioForm extends StatefulWidget {
-  RadioForm({required this.title, required this.option, required this.onChange,Key? key}) : super(key: key);
+  RadioForm({required this.title, required this.option, required this.onChange, this.selected, Key? key}) : super(key: key);
   List<String> option;
   String title;
+  String ?selected;
   final Function onChange;
   @override
   _RadioFormState createState() => _RadioFormState(option: option, title: title);
@@ -21,6 +22,9 @@ class _RadioFormState  extends State<RadioForm> {
     super.initState();
     setState(() {
       output = option.first;
+      for(int a=0; a<option.length; a++){
+        if(widget.selected == option[a]) output = option[a];
+      }
       WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.onChange(output);
     });

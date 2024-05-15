@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-Widget disabledInput(String title, String noApar){
+Widget disabledInput(String title, String value){
   return Container(
       padding: EdgeInsets.only(left: 20, right: 30),
       height: 30,
@@ -16,7 +16,7 @@ Widget disabledInput(String title, String noApar){
             contentPadding: EdgeInsets.only(left: 10, bottom: 10)
             // errorText: _error[1] ? 'Value Can\'t Be Empty' : null,
           ),
-          controller: TextEditingController(text: "${noApar}"),
+          controller: TextEditingController(text: "${value}"),
         )
     );
 }

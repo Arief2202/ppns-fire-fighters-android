@@ -1,6 +1,10 @@
 // ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last, unused_local_variable, prefer_final_fields, unnecessary_this, unnecessary_null_comparison
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:ppns_fire_fighters/DisabledInput.dart';
+import 'package:ppns_fire_fighters/RadioForm.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -54,6 +58,7 @@ class _UsersState extends State<Users> {
     "id", "Role",  "Name", "Email", "Created At"
   ];
   List<List<String>> makeData = [];
+  String roleAddUser = "Inspektor";
   
   
   late DataUserAPI currentData = DataUserAPI(status: "", pesan: "", data: makeData);
@@ -196,15 +201,17 @@ class _UsersState extends State<Users> {
                     onPressed: (){
                           Alert(
                             context: context,
-                            title: "Tambahkan Data",
+                            title: "Tambahkan User",
                             content: Column(
-                              children: <Widget>[
-                                TextField(
-                                  decoration: InputDecoration(
-                                    // icon: Icon(Icons.account_circle),
-                                    labelText: 'role',
-                                  ),
-                                  controller: _controller[0],
+                              children: <Widget>[                 
+                                RadioForm(title: "Role", option: ["Inspektor", "Manajemen", "Admin"], onChange: (String? value) {
+                                  setState(() {
+                                    if(value == "Inspektor") _controller[0].text = "0";
+                                    if(value == "Admin") _controller[0].text = "1";
+                                    if(value == "Manajemen") _controller[0].text = "2";
+                                  });
+                                    print("Role : ${_controller[0].text}");
+                                  },
                                 ),
                                 TextField(
                                   // obscureText: true,
@@ -223,7 +230,7 @@ class _UsersState extends State<Users> {
                                   controller: _controller[2],
                                 ),
                                 TextField(
-                                  // obscureText: true,
+                                  obscureText: true,
                                   decoration: InputDecoration(
                                     // icon: Icon(Icons.lock),
                                     labelText: 'password',
@@ -366,7 +373,7 @@ class SimpleTablePage extends State<SimpleTablePageState>{//StatelessWidget {
         columnsLength: titleColumn.length,
         rowsLength: data.data.length,
         columnsTitleBuilder: (i) => Text(titleColumn[i]),
-        contentCellBuilder: (i, j) => Text( i!=1?(i == 4 ? data.data[j][i+1] : data.data[j][i]):(data.data[j][i] == '1' ? "Admin" : "Inspektor") ),
+        contentCellBuilder: (i, j) => Text( i!=1?(i == 4 ? data.data[j][i+1] : data.data[j][i]):(data.data[j][i] == '0' ? "Inspektor" : data.data[j][i] == '1' ? "Admin" : data.data[j][i] == '2' ? "Manajemen" : "Unknown") ),
         legendCell: Text(''),
         cellDimensions: CellDimensions.fixed(
           contentCellWidth: 100, 
@@ -384,51 +391,25 @@ class SimpleTablePage extends State<SimpleTablePageState>{//StatelessWidget {
                 _controller[1].text = data.data[i][1];
                 _controller[2].text = data.data[i][2];
                 _controller[3].text = data.data[i][3];
-                // _controller[4].text = data[i][4];
+                _controller[4].text = "";
                 _controller[5].text = data.data[i][5];
               });
               
               Alert(
                 context: context,
-                title: "Edit Data Apar",
+                title: "Edit Data User",
                 content: Column(
                   children: <Widget>[
-                    TextField(
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        // icon: Icon(Icons.account_circle),
-                        labelText: 'ID',
-                      ),
-                      controller: _controller[0],
-                    ),
-                    ListTile(
-                      title: const Text('Admin'),
-                      leading: Radio<int>(
-                        value: 1,
-                        groupValue: selectedRole,
-                        onChanged: (int? value) {
-                          setState(() {
-                            selectedRole = value;
-                          });
-                        },
-                      ),
-                    ),
-                    ListTile(
-                      title: const Text('Inspektor'),
-                      leading: Radio<int>(
-                        value: 0,
-                        groupValue: selectedRole,
-                        onChanged: (int? value) {
-                            selectedRole = value;
-                        },
-                      ),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        // icon: Icon(Icons.lock),
-                        labelText: 'Role',
-                      ),
-                      controller: _controller[1],
+                    RadioForm(title: "Role", option: ["Inspektor", "Manajemen", "Admin"], onChange: (String? value) {
+                      setState(() {
+                        if(value == "Inspektor") selectedRole = 0;
+                        if(value == "Admin") selectedRole = 1;
+                        if(value == "Manajemen") selectedRole = 2;
+                        _controller[1].text = "${selectedRole}";
+                      });
+                        print("Role : ${_controller[1].text}");
+                      },
+                      selected: selectedRole == 0 ? "Inspektor" : selectedRole == 1 ? "Admin" : selectedRole == 2 ? "Manajemen" : "",
                     ),
                     TextField(
                       decoration: InputDecoration(
@@ -456,7 +437,7 @@ class SimpleTablePage extends State<SimpleTablePageState>{//StatelessWidget {
                       readOnly: true,
                       decoration: InputDecoration(
                         // icon: Icon(Icons.lock),
-                        labelText: 'Timestamp',
+                        labelText: 'Created At',
                       ),
                       controller: _controller[5],
                     ),
