@@ -13,6 +13,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' show jsonDecode;
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 void main() {
   runApp(
@@ -56,6 +60,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController nameController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -131,6 +136,38 @@ class _MyHomePageState extends State<MyHomePage> {
                   globals.user_password = parsed['data']['user']['password'];
                   globals.isLoggedIn = true;
                 });
+                if(globals.user_role == "1"){
+                    var status = await Permission.notification.status;
+                    if (!status.isGranted) {
+                        print("Notification access denied!");
+                        Alert(
+                          context: context,
+                          type: AlertType.error,
+                          title: "Notification Permission Denied!",
+                          desc: "Please allow notification permission on system setting",
+                          style: AlertStyle(
+                            titleStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            descStyle: TextStyle(fontSize: 14),
+                          ),
+                          buttons: [
+                            DialogButton(
+                              child: Text(
+                                "OK",
+                                style: TextStyle(color: Colors.white, fontSize: 20),
+                              ),
+                              onPressed: () async {
+                                Navigator.pop(context);
+                              }
+                            )
+                          ],
+                        ).show();
+                    }
+                    else{
+                      print("notificaiton access granted");
+                    }
+                }
+
+
               } else {
                 await prefs.remove('user_id');
                 await prefs.remove('user_role');

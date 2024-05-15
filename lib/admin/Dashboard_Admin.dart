@@ -7,7 +7,15 @@ import 'package:ppns_fire_fighters/admin/DataAparHydrant.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'dart:async';
 import 'package:ppns_fire_fighters/globals.dart' as globals;
+import 'package:ppns_fire_fighters/notification.dart';
+import 'package:ppns_fire_fighters/admin/DataModel.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:http/http.dart' as http;
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 class DashboardAdmin extends StatefulWidget {
   DashboardAdmin({Key? key}) : super(key: key);
@@ -17,9 +25,44 @@ class DashboardAdmin extends StatefulWidget {
 }
 
 class _DashboardAdminState extends State<DashboardAdmin> {
+  Timer? timer;
+
   @override
   void initState() {
     super.initState();
+    notif.initialize(flutterLocalNotificationsPlugin);
+    timer = Timer.periodic(
+        Duration(milliseconds: 1000), (Timer t) => updateNotification());
+  }
+
+  void updateNotification() async {
+    try {
+      final response = await http.get(Uri.parse("http://${globals.endpoint}/api_notification.php?read&user_id=${globals.user_id}")).timeout(
+        const Duration(seconds: 1),
+        onTimeout: () {
+          return http.Response('Error', 408);
+        },
+      );
+      if (response.statusCode == 200) {
+        var respon = Json.tryDecode(response.body)['data'];
+        for (int a = 0; a < respon.length; a++) {
+          notif.showNotif(
+              id: int.parse(respon[a]['id']),
+              head: respon[a]['title'],
+              body: respon[a]['content'],
+              fln: flutterLocalNotificationsPlugin);
+              
+          try {
+            await http.get(Uri.parse("http://${globals.endpoint}/api_notification.php?displayed&notif_id=${respon[a]['id']}")).timeout(
+              const Duration(seconds: 1),
+              onTimeout: () {
+                return http.Response('Error', 408);
+              },
+            );
+          } on Exception catch (_){}
+        }
+      }
+    } on Exception catch (_) {}
   }
 
   @override
@@ -97,34 +140,31 @@ class _DashboardAdminState extends State<DashboardAdmin> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "ADMIN DASHBOARD",
-                      style: TextStyle(
-                        fontFamily: "SanFrancisco",
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 30,
-                        color: Color.fromARGB(255, 255, 50, 50)
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "ADMIN DASHBOARD",
+                        style: TextStyle(
+                            fontFamily: "SanFrancisco",
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 30,
+                            color: Color.fromARGB(255, 255, 50, 50)),
                       ),
-                    ),
-                  ],
-                )                
-              ),
-
+                    ],
+                  )),
               Card(
                 child: InkWell(
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) {
-                          return DataAparHydrant();
-                        }),
-                      );
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return DataAparHydrant();
+                      }),
+                    );
                   },
                   child: Container(
                       width: MediaQuery.of(context).size.width - 50,
@@ -153,10 +193,8 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                               ),
                               Text(
                                 "Description",
-                                style: TextStyle(
-                                  fontSize: 12
-                                ),
-                                )
+                                style: TextStyle(fontSize: 12),
+                              )
                             ],
                           ),
                         ],
@@ -168,17 +206,15 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                 elevation: 5,
                 margin: EdgeInsets.all(10),
               ),
-
-              
               Card(
                 child: InkWell(
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) {
-                          return HasilInspeksi();
-                        }),
-                      );
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return HasilInspeksi();
+                      }),
+                    );
                   },
                   child: Container(
                       width: MediaQuery.of(context).size.width - 50,
@@ -207,10 +243,8 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                               ),
                               Text(
                                 "Description",
-                                style: TextStyle(
-                                  fontSize: 12
-                                ),
-                                )
+                                style: TextStyle(fontSize: 12),
+                              )
                             ],
                           ),
                         ],
@@ -222,16 +256,15 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                 elevation: 5,
                 margin: EdgeInsets.all(10),
               ),
-              
               Card(
                 child: InkWell(
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) {
-                          return Users();
-                        }),
-                      );
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return Users();
+                      }),
+                    );
                   },
                   child: Container(
                       width: MediaQuery.of(context).size.width - 50,
@@ -260,10 +293,8 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                               ),
                               Text(
                                 "Description",
-                                style: TextStyle(
-                                  fontSize: 12
-                                ),
-                                )
+                                style: TextStyle(fontSize: 12),
+                              )
                             ],
                           ),
                         ],
@@ -275,8 +306,6 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                 elevation: 5,
                 margin: EdgeInsets.all(10),
               ),
-
-              
             ],
           ),
         ),
