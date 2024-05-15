@@ -1,6 +1,7 @@
 // ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api, non_constant_identifier_names, prefer_interpolation_to_compose_strings, prefer_const_constructors, use_build_context_synchronously, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:ppns_fire_fighters/manajemen/PieChartPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ppns_fire_fighters/user/Dashboard.dart';
 import 'package:ppns_fire_fighters/admin/Dashboard_Admin.dart';
@@ -14,9 +15,6 @@ import 'dart:convert' show jsonDecode;
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 void main() {
   runApp(
@@ -263,6 +261,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return globals.loadingAutologin ? Scaffold() : Scaffold(body: globals.isLoggedIn ? (globals.user_role == "0" ? Dashboard() : DashboardAdmin()) : LandingPage());
+    return globals.loadingAutologin ? Scaffold() : Scaffold(body: globals.isLoggedIn ? (globals.user_role == "0" ? Dashboard() : globals.user_role == "1" ? DashboardAdmin() : PieChartPage()) : LandingPage());
   }
 }

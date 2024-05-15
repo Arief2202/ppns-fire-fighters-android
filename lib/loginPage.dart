@@ -22,6 +22,12 @@ class LoginPageState extends State<LoginPage> {
   String _passwordMsg = "Value Can\'t Be Empty";
 
   @override
+  void initState() {
+    super.initState();
+    globals.timerNotif!.cancel();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(

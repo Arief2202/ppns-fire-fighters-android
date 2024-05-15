@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
-
 library globals;
+import 'dart:async';
 
 bool loadingAutologin = false;
 bool isLoggedIn = false;
@@ -13,3 +13,4 @@ String user_email = "";
 String user_password = "";
 String user_card_id = "";
 String user_role = "";
+Timer? timerNotif;

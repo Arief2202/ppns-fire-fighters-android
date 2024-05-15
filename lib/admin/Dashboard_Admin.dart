@@ -25,13 +25,11 @@ class DashboardAdmin extends StatefulWidget {
 }
 
 class _DashboardAdminState extends State<DashboardAdmin> {
-  Timer? timer;
-
   @override
   void initState() {
     super.initState();
     notif.initialize(flutterLocalNotificationsPlugin);
-    timer = Timer.periodic(
+    globals.timerNotif = Timer.periodic(
         Duration(milliseconds: 1000), (Timer t) => updateNotification());
   }
 
@@ -98,6 +96,7 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                                   TextStyle(color: Colors.white, fontSize: 20),
                             ),
                             onPressed: () async {
+                              globals.timerNotif!.cancel();
                               final prefs =
                                   await SharedPreferences.getInstance();
                               await prefs.remove('user_id');
