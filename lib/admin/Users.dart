@@ -1,9 +1,5 @@
 // ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last, unused_local_variable, prefer_final_fields, unnecessary_this, unnecessary_null_comparison
-
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:ppns_fire_fighters/DisabledInput.dart';
 import 'package:ppns_fire_fighters/RadioForm.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
