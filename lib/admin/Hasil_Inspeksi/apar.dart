@@ -110,7 +110,14 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
 
   static List<String> columnExcel = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'X', 'Y', 'Z'];
   static List<String> DropDownName = <String>['Sudah Di Inspeksi', 'Belum Di Inspeksi'];
+  static List<String> FilterKadaluarsa = <String>['Kadaluarsa : Semua', 'Kadaluarsa : Belum', 'Kadaluarsa : Sudah'];
+  static List<String> FilterKerusakan = <String>['Kerusakan : Semua', 'Kerusakan : Tidak', 'Kerusakan : Rusak'];
   String dropdownValue = DropDownName.first;
+  String FilterKadaluarsaValue = FilterKadaluarsa.first;
+  String FilterKerusakanValue = FilterKerusakan.first;
+  String kadaluarsa = "semua";
+  String kerusakan = "semua";
+  
   @override
   void initState() {
     super.initState();
@@ -125,7 +132,7 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
   }
 
   void updateValue() async {
-    var url = Uri.parse("http://${globals.endpoint}/api_inspeksi_apar.php?read&start_date=${selectedDate.year}-${selectedDate.month}-1 00:00:00&end_date=${selectedDate.year}-${selectedDate.month}-31 23:59:59&inspeksi=${inspeksi}");  
+    var url = Uri.parse("http://${globals.endpoint}/api_inspeksi_apar.php?read&start_date=${selectedDate.year}-${selectedDate.month}-1 00:00:00&end_date=${selectedDate.year}-${selectedDate.month}-31 23:59:59&inspeksi=${inspeksi}&kadaluarsa=${kadaluarsa}&kerusakan=${kerusakan}");  
     try {
       final response = await http.get(url).timeout(
         const Duration(seconds: 1),
@@ -133,6 +140,7 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
           return http.Response('Error', 408);
         },
       );
+      print(response.body);
       if (response.statusCode == 200) {
         var respon = Json.tryDecode(response.body);
         if (this.mounted) {
@@ -367,13 +375,86 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
                   )
                 ),
             ])),
+            
+          Align(
+              alignment: Alignment.topLeft,
+              child: Column(children: [
+                Container(
+                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 220),
+                  height: 48,
+                  width: MediaQuery.of(context).size.width-200,
+                  child: DropdownButton(
+                    value: FilterKadaluarsaValue,
+                    icon: Icon(Icons.arrow_downward),
+                    iconSize: 24,
+                    elevation: 16,
+                    isExpanded: true,
+                    style: TextStyle(color: Colors.blue, fontSize: 14.0),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.blue,
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        FilterKadaluarsaValue = newValue!;
+                        if(newValue == FilterKadaluarsa[0]) kadaluarsa = "semua";
+                        else if(newValue == FilterKadaluarsa[1]) kadaluarsa = "belum";
+                        else kadaluarsa="sudah";
+                      });
+                      updateValue();
+                    },
+                    items: FilterKadaluarsa.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  )
+                ),
+            ])),
+          Align(
+              alignment: Alignment.topRight,
+              child: Column(children: [
+                Container(
+                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 220),
+                  height: 48,
+                  width: MediaQuery.of(context).size.width-200,
+                  child: DropdownButton(
+                    value: FilterKerusakanValue,
+                    icon: Icon(Icons.arrow_downward),
+                    iconSize: 24,
+                    elevation: 16,
+                    isExpanded: true,
+                    style: TextStyle(color: Colors.blue, fontSize: 14.0),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.blue,
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        FilterKerusakanValue = newValue!;
+                        if(newValue == FilterKerusakan[0]) kerusakan = "semua";
+                        else if(newValue == FilterKerusakan[1]) kerusakan = "tidak";
+                        else kerusakan="rusak";
+                      });
+                      updateValue();
+                    },
+                    items: FilterKerusakan.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  )
+                ),
+            ])),
           Align(
               alignment: Alignment.topRight,
               child: Column(children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height-220,
-                  margin: EdgeInsets.only(top: 220),
+                  height: MediaQuery.of(context).size.height-280,
+                  margin: EdgeInsets.only(top: 280),
                   decoration: BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
                   child: SimpleTablePage(
                       titleColumn: inspeksi == "sudah" ? titleColumn : titleColumn2,
