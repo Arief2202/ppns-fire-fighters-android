@@ -1,5 +1,6 @@
-// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously
+// ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, curly_braces_in_flow_control_structures, unused_import
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:ppns_fire_fighters/loginPage.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -18,11 +19,20 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   List<TextEditingController> _data = [TextEditingController()];
   bool status = false;
+  // Timer ?timer;
   @override
   void initState() {
     super.initState();
     getEndpoint();
+    for(int a=0; a<10; a++) cancelTimer();
+    // timer = Timer.periodic(Duration(milliseconds: 1000), (Timer t) => cancelTimer());
   }
+
+  void cancelTimer(){
+      if(globals.timerNotif != null) globals.timerNotif!.cancel();    
+      if(globals.timerData != null) globals.timerData!.cancel();
+  }
+
   void getEndpoint() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? endpoint = prefs.getString('endpoint');

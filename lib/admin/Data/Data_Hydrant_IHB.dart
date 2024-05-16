@@ -83,12 +83,12 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> with RestorationMixin {
 
   Timer? timer;
   List<String> titleColumn = [
-    "id", "Nomor",  "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
+    "id", "Nomor",  "Lokasi", "Created at"
   ];
   List<List<String>> makeData = [];
   
   
-  late DataAPI currentData = DataAPI(status: "", pesan: "", data: makeData);
+  late DataAPIHydrant currentData = DataAPIHydrant(status: "", pesan: "", data: makeData);
 
   @override
   void initState() {
@@ -97,6 +97,11 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> with RestorationMixin {
     timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => updateValue());
   }
 
+  @override
+  void dispose() {
+    timer!.cancel();
+    super.dispose();
+  }
 
   void updateValue() async {
     var url = Uri.parse("http://${globals.endpoint}/api_hydrant.php?read&jenis=ihb");  
@@ -111,7 +116,7 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> with RestorationMixin {
         var respon = Json.tryDecode(response.body);
         if (this.mounted) {
           setState(() {
-            currentData = DataAPI.fromJson(respon);
+            currentData = DataAPIHydrant.fromJson(respon);
           });
         }
       }
@@ -250,27 +255,6 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> with RestorationMixin {
                                   controller: _controller[1],
                                 ),
                                 Padding(padding: EdgeInsets.all(10)),
-                                OutlinedButton(
-                                  onPressed: () {
-                                    _restorableDatePickerRouteFuture.present();
-                                  },
-                                  child: const Text('Pilih Tanggal Kadaluarsa'),
-                                ),
-                                TextField(
-                                  // obscureText: true,
-                                  decoration: InputDecoration(
-                                    // icon: Icon(Icons.lock),
-                                    labelText: 'Tanggal Kadaluarsa',
-                                  ),
-                                  controller: _controller[2],
-                                ),
-                                // TextField(
-                                //   // obscureText: true,
-                                //   decoration: InputDecoration(
-                                //     // icon: Icon(Icons.lock),
-                                //     labelText: 'Tanggal Kadaluarsa',
-                                //   ),
-                                // ),
                               ],
                             ),
                             buttons: [
@@ -280,7 +264,7 @@ class _DataHydrantIHBState extends State<DataHydrantIHB> with RestorationMixin {
                                   style: TextStyle(color: Colors.white, fontSize: 20),
                                 ),
                                 onPressed: () async{                                  
-                                  var url = Uri.parse("http://${globals.endpoint}/api_hydrant.php?create&jenis=ihb&nomor=${_controller[0].text}&lokasi=${_controller[1].text}&kadaluarsa=${_controller[2].text}");  
+                                  var url = Uri.parse("http://${globals.endpoint}/api_hydrant.php?create&jenis=ihb&nomor=${_controller[0].text}&lokasi=${_controller[1].text}");  
                                   try {
                                     final response = await http.get(url).timeout(
                                       const Duration(seconds: 1),
@@ -336,7 +320,6 @@ class SimpleTablePage extends StatelessWidget {
     TextEditingController(text: ''),
     TextEditingController(text: ''),
     TextEditingController(text: ''),
-    TextEditingController(text: ''),
     TextEditingController(text: '')
   ];
 
@@ -363,7 +346,6 @@ class SimpleTablePage extends StatelessWidget {
               _controller[1].text = data[i][1];
               _controller[2].text = data[i][2];
               _controller[3].text = data[i][3];
-              _controller[4].text = data[i][4];
               Alert(
                 context: context,
                 title: "Edit Data Apar",
@@ -392,19 +374,12 @@ class SimpleTablePage extends StatelessWidget {
                       controller: _controller[2],
                     ),
                     TextField(
-                      decoration: InputDecoration(
-                        // icon: Icon(Icons.lock),
-                        labelText: 'Tanggal Kadaluarsa',
-                      ),
-                      controller: _controller[3],
-                    ),
-                    TextField(
                       readOnly: true,
                       decoration: InputDecoration(
                         // icon: Icon(Icons.lock),
-                        labelText: 'Timestamp',
+                        labelText: 'Created at',
                       ),
-                      controller: _controller[4],
+                      controller: _controller[3],
                     ),
                   ],
                 ),
@@ -434,7 +409,7 @@ class SimpleTablePage extends StatelessWidget {
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     onPressed: () async {
-                      var url = Uri.parse("http://${globals.endpoint}/api_hydrant.php?update&id=${_controller[0].text}&nomor=${_controller[1].text}&lokasi=${_controller[2].text}&kadaluarsa=${_controller[3].text}");  
+                      var url = Uri.parse("http://${globals.endpoint}/api_hydrant.php?update&id=${_controller[0].text}&nomor=${_controller[1].text}&lokasi=${_controller[2].text}");  
                       try {
                         final response = await http.get(url).timeout(
                           const Duration(seconds: 1),

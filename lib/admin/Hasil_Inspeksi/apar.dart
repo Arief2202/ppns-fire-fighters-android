@@ -89,38 +89,25 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
   DateTime selectedDate = DateTime.now();
   Timer? timer;
   List<String> titleColumn = [
-    "id inspeksi", "Email Inspektor", "Lokasi Apar", "Tanggal Kadaluarsa Apar", "Kondisi Tabung", "Segel Pin", "Tuas Pegangan", "Label Segitiga", "Label Instruksi", "Kondisi Selang", "Tekanan Tabung", "Posisi", "Tanggal Inspeksi"
+    "id inspeksi", "Email Inspektor", "Jenis Pemadam", "Lokasi Apar", "Tanggal Kadaluarsa Apar", "Apar Tersedia", "Kondisi Tabung", "Segel Pin", "Tuas Pegangan", "Label Segitiga", "Label Instruksi", "Kondisi Selang", "Tekanan Tabung", "Posisi", "Tanggal Inspeksi"
   ];
   List<String> titleColumn2 = [
-    "id", "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
+    "id", "Jenis Pemadam", "Lokasi Apar", "Tanggal Kadaluarsa", "Timestamp"
   ];
   
   List<String> titleColumnExport = [
-    "id inspeksi", "Email Inspektor", "Nomor Apar", "Lokasi Apar", "Tanggal Kadaluarsa Apar", "Kondisi Tabung", "Segel Pin", "Tuas Pegangan", "Label Segitiga", "Label Instruksi", "Kondisi Selang", "Tekanan Tabung", "Posisi", "Tanggal Inspeksi"
+    "id inspeksi", "Email Inspektor", "Jenis Pemadam", "Nomor Apar", "Lokasi Apar", "Tanggal Kadaluarsa Apar", "Apar Tersedia", "Kondisi Tabung", "Segel Pin", "Tuas Pegangan", "Label Segitiga", "Label Instruksi", "Kondisi Selang", "Tekanan Tabung", "Posisi", "Tanggal Inspeksi"
   ];
   List<String> titleColumnExport2 = [
-    "id", "Nomor Apar", "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
+    "id", "Jenis Pemadam", "Nomor Apar", "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
   ];
 
   List<List<String>> makeData = [];
   
   
   late DataInspeksiAparAPI currentData = DataInspeksiAparAPI(status: "", pesan: "", data: makeData);
-  late DataAPI currentDataApar = DataAPI(status: "", pesan: "", data: makeData);
-  static List<String> monthName = [
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember",
-  ];
+  late DataAPIApar currentDataApar = DataAPIApar(status: "", pesan: "", data: makeData);
+
   static List<String> columnExcel = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'X', 'Y', 'Z'];
   static List<String> DropDownName = <String>['Sudah Di Inspeksi', 'Belum Di Inspeksi'];
   String dropdownValue = DropDownName.first;
@@ -131,6 +118,11 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
     timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => updateValue());
   }
 
+  @override
+  void dispose() {
+    timer!.cancel();
+    super.dispose();
+  }
 
   void updateValue() async {
     var url = Uri.parse("http://${globals.endpoint}/api_inspeksi_apar.php?read&start_date=${selectedDate.year}-${selectedDate.month}-1 00:00:00&end_date=${selectedDate.year}-${selectedDate.month}-31 23:59:59&inspeksi=${inspeksi}");  
@@ -146,7 +138,7 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
         if (this.mounted) {
           setState(() {
             if(inspeksi == "sudah") currentData = DataInspeksiAparAPI.fromJson(respon);
-            else currentDataApar = DataAPI.fromJson(respon);
+            else currentDataApar = DataAPIApar.fromJson(respon);
           });
         }
       }
@@ -293,7 +285,7 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
                         var fileBytes = excel.save();
 
                         Directory appDocDirectory = await getApplicationDocumentsDirectory();
-                        var dir = "/storage/emulated/0/ppns_fire_fighters/export/${inspeksi}_inspeksi_apar_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
+                        var dir = "/storage/emulated/0/ppns_fire_fighters/export/${inspeksi}_inspeksi_apar_${globals.monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
                         // var dir = "${appDocDirectory.path}/export/${inspeksi}_inspeksi_apar_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
                         File(join(dir))
                           ..createSync(recursive: true)
@@ -316,7 +308,7 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
                   margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 170),
                   child: ElevatedButton(
                     child: Text(
-                      "${monthName[selectedDate.month-1]} ${selectedDate.year}",
+                      "${globals.monthName[selectedDate.month-1]} ${selectedDate.year}",
                       style: TextStyle(
                         color: Colors.white
                       ),
@@ -415,7 +407,7 @@ class SimpleTablePage extends StatelessWidget {
         columnsLength: titleColumn.length,
         rowsLength: data.length,
         columnsTitleBuilder: (i) => Text(titleColumn[i]),
-        contentCellBuilder: (i, j) => Text(inspeksi == 'sudah' ? (i > 1 ? data[j][i+1] : data[j][i]) : (i > 0 ? data[j][i+1] : data[j][i])),
+        contentCellBuilder: (i, j) => Text(inspeksi == 'sudah' ? (i > 1 ? data[j][i+1] : data[j][i]) : (i > 1 ? data[j][i+1] : data[j][i])),
         legendCell: Text('Nomor Apar'),
         cellDimensions: CellDimensions.fixed(
           contentCellWidth: 120, 
@@ -423,7 +415,7 @@ class SimpleTablePage extends StatelessWidget {
           stickyLegendWidth: 85, 
           stickyLegendHeight: 50
         ),
-        rowsTitleBuilder: (i) => Text(inspeksi == 'sudah' ? data[i][2] : data[i][1]),
+        rowsTitleBuilder: (i) => Text(inspeksi == 'sudah' ? data[i][2] : data[i][2]),
       ),
     );
   }

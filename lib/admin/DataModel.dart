@@ -2,8 +2,8 @@
 // ignore_for_file: camel_case_types, unnecessary_null_comparison, file_names, non_constant_identifier_names
 import 'dart:convert';
 
-class DataAPI {
-  DataAPI({
+class DataAPIApar {
+  DataAPIApar({
     required this.status,
     required this.pesan,
     required this.data,
@@ -13,10 +13,28 @@ class DataAPI {
   String pesan;
   List<List<String>> data;
   
-  factory DataAPI.fromJson(Map<String, dynamic> json) => DataAPI(
+  factory DataAPIApar.fromJson(Map<String, dynamic> json) => DataAPIApar(
     status: json["status"],
     pesan: json["pesan"],
-    data: objectToArray(json["data"]),
+    data: objectToArrayApar(json["data"]),
+  );
+}
+
+class DataAPIHydrant {
+  DataAPIHydrant({
+    required this.status,
+    required this.pesan,
+    required this.data,
+  });
+  
+  String status;
+  String pesan;
+  List<List<String>> data;
+  
+  factory DataAPIHydrant.fromJson(Map<String, dynamic> json) => DataAPIHydrant(
+    status: json["status"],
+    pesan: json["pesan"],
+    data: objectToArrayHydrant(json["data"]),
   );
 }
 
@@ -85,14 +103,27 @@ class DataInspeksiIHBAPI {
   );
 }
 
-List<List<String>> objectToArray(List<dynamic> data) {
+List<List<String>> objectToArrayApar(List<dynamic> data) {
+  final List<List<String>> output = [];
+  for(int a=0; a< data.length; a++){
+    final List<String> row = [];
+    row.add(data[a]['id']);
+    row.add(data[a]['jenis_pemadam']);
+    row.add(data[a]['nomor']);
+    row.add(data[a]['lokasi']);
+    row.add(data[a]['tanggal_kadaluarsa']);
+    row.add(data[a]['timestamp']);
+    output.add(row);
+  }
+  return output;
+}
+List<List<String>> objectToArrayHydrant(List<dynamic> data) {
   final List<List<String>> output = [];
   for(int a=0; a< data.length; a++){
     final List<String> row = [];
     row.add(data[a]['id']);
     row.add(data[a]['nomor']);
     row.add(data[a]['lokasi']);
-    row.add(data[a]['tanggal_kadaluarsa']);
     row.add(data[a]['timestamp']);
     output.add(row);
   }
@@ -106,8 +137,10 @@ List<List<String>> objectToArrayInspeksiApar(List<dynamic> data) {
     row.add(data[a]['id']);
     row.add(data[a]['user']['email']);
     row.add(data[a]['apar']['nomor']);
+    row.add(data[a]['apar']['jenis_pemadam']);
     row.add(data[a]['apar']['lokasi']);
     row.add(data[a]['apar']['tanggal_kadaluarsa']);
+    row.add(data[a]['tersedia']);
     row.add(data[a]['kondisi_tabung']);
     row.add(data[a]['segel_pin']);
     row.add(data[a]['tuas_pegangan']);
@@ -130,7 +163,6 @@ List<List<String>> objectToArrayInspeksiOHB(List<dynamic> data) {
     row.add(data[a]['user']['email']);
     row.add(data[a]['hydrant']['nomor']);
     row.add(data[a]['hydrant']['lokasi']);
-    row.add(data[a]['hydrant']['tanggal_kadaluarsa']);
     row.add(data[a]['kondisi_kotak']);
     row.add(data[a]['posisi_kotak']);
     row.add(data[a]['kondisi_nozzle']);
@@ -155,7 +187,6 @@ List<List<String>> objectToArrayInspeksiIHB(List<dynamic> data) {
     row.add(data[a]['user']['email']);
     row.add(data[a]['hydrant']['nomor']);
     row.add(data[a]['hydrant']['lokasi']);
-    row.add(data[a]['hydrant']['tanggal_kadaluarsa']);
     row.add(data[a]['kondisi_kotak']);
     row.add(data[a]['posisi_kotak']);
     row.add(data[a]['kondisi_nozzle']);

@@ -89,38 +89,25 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
   DateTime selectedDate = DateTime.now();
   Timer? timer;
   List<String> titleColumn = [
-    "id inspeksi", "Email Inspektor", "Lokasi Hydrant", "Tanggal Kadaluarsa Hydrant", "Kondisi Kotak", "Posisi Kotak", "Kondisi Nozzle", "Kondisi Selang", "Jenis Selang", "Kondisi Coupling", "Kondisi Landing Valve", "Kondisi Tray", "Tanggal Inspeksi"
+    "id inspeksi", "Email Inspektor", "Lokasi Hydrant", "Kondisi Kotak", "Posisi Kotak", "Kondisi Nozzle", "Kondisi Selang", "Jenis Selang", "Kondisi Coupling", "Kondisi Landing Valve", "Kondisi Tray", "Tanggal Inspeksi"
   ];
   List<String> titleColumn2 = [
-    "id", "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
+    "id", "Lokasi", "Timestamp"
   ];
   
   List<String> titleColumnExport = [
-    "id inspeksi", "Email Inspektor", "Nomor Hydrant","Lokasi Hydrant", "Tanggal Kadaluarsa Hydrant", "Kondisi Kotak", "Posisi Kotak", "Kondisi Nozzle", "Kondisi Selang", "Jenis Selang", "Kondisi Coupling", "Kondisi Landing Valve", "Kondisi Tray", "Tanggal Inspeksi"
+    "id inspeksi", "Email Inspektor", "Nomor Hydrant", "Lokasi Hydrant", "Kondisi Kotak", "Posisi Kotak", "Kondisi Nozzle", "Kondisi Selang", "Jenis Selang", "Kondisi Coupling", "Kondisi Landing Valve", "Kondisi Tray", "Tanggal Inspeksi"
   ];
   List<String> titleColumnExport2 = [
-    "id", "Nomor Hydrant", "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
+    "id", "Nomor Hydrant", "Lokasi", "Timestamp"
   ];
 
   List<List<String>> makeData = [];
   
   
   late DataInspeksiIHBAPI currentData = DataInspeksiIHBAPI(status: "", pesan: "", data: makeData);
-  late DataAPI currentDataApar = DataAPI(status: "", pesan: "", data: makeData);
-  static List<String> monthName = [
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember",
-  ];
+  late DataAPIHydrant currentDataApar = DataAPIHydrant(status: "", pesan: "", data: makeData);
+
   static List<String> columnExcel = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'X', 'Y', 'Z'];
   static List<String> DropDownName = <String>['Sudah Di Inspeksi', 'Belum Di Inspeksi'];
   String dropdownValue = DropDownName.first;
@@ -129,6 +116,11 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
     super.initState();
     updateValue();
     timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => updateValue());
+  }
+  @override
+  void dispose() {
+    timer!.cancel();
+    super.dispose();
   }
 
 
@@ -146,7 +138,7 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
         if (this.mounted) {
           setState(() {
             if(inspeksi == "sudah") currentData = DataInspeksiIHBAPI.fromJson(respon);
-            else currentDataApar = DataAPI.fromJson(respon);
+            else currentDataApar = DataAPIHydrant.fromJson(respon);
           });
         }
       }
@@ -293,7 +285,7 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
                         var fileBytes = excel.save();
 
                         Directory appDocDirectory = await getApplicationDocumentsDirectory();
-                        var dir = "/storage/emulated/0/ppns_fire_fighters/export/${inspeksi}_inspeksi_hydrant_ihb_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
+                        var dir = "/storage/emulated/0/ppns_fire_fighters/export/${inspeksi}_inspeksi_hydrant_ihb_${globals.monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
                         // var dir = "${appDocDirectory.path}/export/${inspeksi}_inspeksi_apar_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
                         File(join(dir))
                           ..createSync(recursive: true)
@@ -316,7 +308,7 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
                   margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 170),
                   child: ElevatedButton(
                     child: Text(
-                      "${monthName[selectedDate.month-1]} ${selectedDate.year}",
+                      "${globals.monthName[selectedDate.month-1]} ${selectedDate.year}",
                       style: TextStyle(
                         color: Colors.white
                       ),

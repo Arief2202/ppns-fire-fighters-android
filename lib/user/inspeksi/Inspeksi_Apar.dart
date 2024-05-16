@@ -346,7 +346,7 @@ class _InspeksiAparState2 extends State<InspeksiApar2> {
                                   RadioForm(title: "Label (Instruksi Penggunaan APAR) :", option: ["Terbaca", "Tidak Terbaca", "Tidak Ada"], onChange: (String? value) {setState(() {label_instruksi = value!;});log("Label Instruksi : ${label_instruksi}");}),
                                   RadioForm(title: "Kondisi Selang :", option: ["Baik", "Rusak", "Lainnya"], onChange: (String? value) {setState(() {kondisi_selang = value!;});log("Kondisi Selang : ${kondisi_selang}");}),
                                   RadioForm(title: "Tekanan Tabung (Posisi Jarum) :", option: ["Tepat di hijau", "Kurang dari hijau", "Lebih dari hijau", "Tidak tersedia"], onChange: (String? value) {setState(() {tekanan_tabung = value!;});log("Tekanan Tabung : ${tekanan_tabung}");}),
-                                  RadioForm(title: "Posisi Alat Pemadam Api :", option: ["Tidak terhalang / Mudah Dijangkau / Terlihat", "Terhalang"], onChange: (String? value) {setState(() {posisi = value!;});log("Posisi : ${posisi}");}),
+                                  RadioForm(title: "Posisi Alat Pemadam Api :", option: ["Terlihat", "Terhalang"], onChange: (String? value) {setState(() {posisi = value!;});log("Posisi : ${posisi}");}),
                                   Padding(padding: EdgeInsets.all(20))
                                 ],
                               ),

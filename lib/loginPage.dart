@@ -24,7 +24,8 @@ class LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    globals.timerNotif!.cancel();
+    if(globals.timerNotif != null) globals.timerNotif!.cancel();
+    if(globals.timerData != null) globals.timerData!.cancel();
   }
 
   @override

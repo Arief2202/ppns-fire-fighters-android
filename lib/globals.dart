@@ -14,3 +14,19 @@ String user_password = "";
 String user_card_id = "";
 String user_role = "";
 Timer? timerNotif;
+Timer? timerData;
+
+List<String> monthName = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "Mei",
+  "Jun",
+  "Jul",
+  "Agu",
+  "Sep",
+  "Okt",
+  "Nov",
+  "Des",
+];

@@ -66,6 +66,11 @@ class _UsersState extends State<Users> {
     timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => updateValue());
   }
 
+  @override
+  void dispose() {
+    timer!.cancel();
+    super.dispose();
+  }
 
   void updateValue() async {
     var url = Uri.parse("http://${globals.endpoint}/api_user.php?read");  

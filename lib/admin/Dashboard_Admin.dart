@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ppns_fire_fighters/admin/Hasil_Inspeksi.dart';
 import 'package:ppns_fire_fighters/admin/Users.dart';
 import 'package:ppns_fire_fighters/admin/DataAparHydrant.dart';
+import 'package:ppns_fire_fighters/manajemen/PieChartPage.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -96,7 +97,7 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                                   TextStyle(color: Colors.white, fontSize: 20),
                             ),
                             onPressed: () async {
-                              globals.timerNotif!.cancel();
+                              if(globals.timerNotif != null) globals.timerNotif!.cancel();
                               final prefs =
                                   await SharedPreferences.getInstance();
                               await prefs.remove('user_id');
@@ -139,7 +140,8 @@ class _DashboardAdminState extends State<DashboardAdmin> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                  width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(top: 50),
+                  width: MediaQuery.of(context).size.width-50,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -235,6 +237,57 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                             children: [
                               Text(
                                 "HASIL INSPEKSI",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Text(
+                                "Description",
+                                style: TextStyle(fontSize: 12),
+                              )
+                            ],
+                          ),
+                        ],
+                      )),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                elevation: 5,
+                margin: EdgeInsets.all(10),
+              ),
+              
+              Card(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return PieChartPage();
+                      }),
+                    );
+                  },
+                  child: Container(
+                      width: MediaQuery.of(context).size.width - 50,
+                      padding: EdgeInsets.all(5),
+                      height: 100,
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(2),
+                            child: Image.asset(
+                              'assets/img/hasilInspeksi.png',
+                              width: 100,
+                              height: 100,
+                            ),
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Pie Chart",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,

@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, camel_case_types, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables, use_build_context_synchronously, sized_box_for_whitespace, sort_child_properties_last, unused_local_variable, must_be_immutable, prefer_final_fields, use_key_in_widget_constructors, unnecessary_this
 
 import 'package:flutter/material.dart';
+import 'package:ppns_fire_fighters/RadioForm.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -82,14 +83,12 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
 
   Timer? timer;
   List<String> titleColumn = [
-    "id", "Nomor",  "Lokasi", "Tanggal Kadaluarsa", "Timestamp"
+    "id", "Jenis Pemadam", "Nomor",  "Lokasi", "Tanggal Kadaluarsa", "Created at"
   ];
-  List<List<String>> makeData = [
-    ["id", "Nomor",  "Lokasi", "Tanggal Kadaluarsa", "Timestamp"],
-  ];
+  List<List<String>> makeData = [];
+  String jenis_pemadam = "Dry Chemical Powder";
   
-  
-  late DataAPI currentData = DataAPI(status: "", pesan: "", data: makeData);
+  late DataAPIApar currentData = DataAPIApar(status: "", pesan: "", data: makeData);
 
   @override
   void initState() {
@@ -98,6 +97,11 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
     timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => updateValue());
   }
 
+  @override
+  void dispose() {
+    timer!.cancel();
+    super.dispose();
+  }
 
   void updateValue() async {
     var url = Uri.parse("http://${globals.endpoint}/api_apar.php?read");  
@@ -112,7 +116,7 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
         var respon = Json.tryDecode(response.body);
         if(this.mounted){
             setState(() {
-              currentData = DataAPI.fromJson(respon);
+              currentData = DataAPIApar.fromJson(respon);
             });
         }
       }
@@ -234,7 +238,14 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
                             context: context,
                             title: "Tambahkan Data",
                             content: Column(
-                              children: <Widget>[
+                              children: <Widget>[          
+                                RadioForm(title: "Jenis Pemadam", option: ["Dry Chemical Powder", "CO2", "Clean Agent", "Foam", "Lainnya"], onChange: (String? value) {
+                                  setState(() {
+                                    jenis_pemadam = value!;
+                                  });
+                                    print("Jenis Pemadam : ${jenis_pemadam}");
+                                  },
+                                ),
                                 TextField(
                                   decoration: InputDecoration(
                                     // icon: Icon(Icons.account_circle),
@@ -281,7 +292,7 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
                                   style: TextStyle(color: Colors.white, fontSize: 20),
                                 ),
                                 onPressed: () async{                                  
-                                  var url = Uri.parse("http://${globals.endpoint}/api_apar.php?create&nomor=${_controller[0].text}&lokasi=${_controller[1].text}&kadaluarsa=${_controller[2].text}");  
+                                  var url = Uri.parse("http://${globals.endpoint}/api_apar.php?create&jenis_pemadam=${jenis_pemadam}&nomor=${_controller[0].text}&lokasi=${_controller[1].text}&kadaluarsa=${_controller[2].text}");  
                                   try {
                                     final response = await http.get(url).timeout(
                                       const Duration(seconds: 1),
@@ -333,6 +344,7 @@ class SimpleTablePage extends StatelessWidget {
 
   final List<List<String>> data;
   final List<String> titleColumn;
+  String jenis_pemadam = "Dry Chemical Powder";
   List<TextEditingController> _controller = [
     TextEditingController(text: ''),
     TextEditingController(text: ''),
@@ -361,10 +373,11 @@ class SimpleTablePage extends StatelessWidget {
           child: ElevatedButton(
             onPressed: (){
               _controller[0].text = data[i][0];
-              _controller[1].text = data[i][1];
-              _controller[2].text = data[i][2];
-              _controller[3].text = data[i][3];
-              _controller[4].text = data[i][4];
+              jenis_pemadam = data[i][1];
+              _controller[1].text = data[i][2];
+              _controller[2].text = data[i][3];
+              _controller[3].text = data[i][4];
+              _controller[4].text = data[i][5];
               Alert(
                 context: context,
                 title: "Edit Data Apar",
@@ -377,6 +390,12 @@ class SimpleTablePage extends StatelessWidget {
                         labelText: 'ID',
                       ),
                       controller: _controller[0],
+                    ),  
+                    RadioForm(title: "Jenis Pemadam", option: ["Dry Chemical Powder", "CO2", "Clean Agent", "Foam", "Lainnya"], onChange: (String? value) {
+                        jenis_pemadam = value!;
+                        print("Jenis Pemadam : ${jenis_pemadam}");
+                      },
+                      selected: data[i][1],
                     ),
                     TextField(
                       decoration: InputDecoration(
@@ -403,7 +422,7 @@ class SimpleTablePage extends StatelessWidget {
                       readOnly: true,
                       decoration: InputDecoration(
                         // icon: Icon(Icons.lock),
-                        labelText: 'Timestamp',
+                        labelText: 'Created at',
                       ),
                       controller: _controller[4],
                     ),
@@ -435,7 +454,7 @@ class SimpleTablePage extends StatelessWidget {
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     onPressed: () async {
-                      var url = Uri.parse("http://${globals.endpoint}/api_apar.php?update&id=${_controller[0].text}&nomor=${_controller[1].text}&lokasi=${_controller[2].text}&kadaluarsa=${_controller[3].text}");  
+                      var url = Uri.parse("http://${globals.endpoint}/api_apar.php?update&id=${_controller[0].text}&jenis_pemadam=${jenis_pemadam}&nomor=${_controller[1].text}&lokasi=${_controller[2].text}&kadaluarsa=${_controller[3].text}");  
                       try {
                         final response = await http.get(url).timeout(
                           const Duration(seconds: 1),
