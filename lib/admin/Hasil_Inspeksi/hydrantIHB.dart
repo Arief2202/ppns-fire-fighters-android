@@ -111,10 +111,18 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
   static List<String> columnExcel = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'X', 'Y', 'Z'];
   static List<String> DropDownName = <String>['Sudah Di Inspeksi', 'Belum Di Inspeksi'];
   String dropdownValue = DropDownName.first;
+  
+  static List<String> FilterKerusakan = <String>['Kerusakan : Tampilkan Semua', 'Kerusakan : Tidak', 'Kerusakan : Rusak'];
+  String FilterKerusakanValue = FilterKerusakan.first; 
+  String kerusakan = "semua";
+  
   @override
   void initState() {
     super.initState();
     updateValue();
+    setState(() {
+      inspeksi = "sudah";
+    });
     timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => updateValue());
   }
   @override
@@ -125,7 +133,7 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
 
 
   void updateValue() async {
-    var url = Uri.parse("http://${globals.endpoint}/api_inspeksi_ihb.php?read&start_date=${selectedDate.year}-${selectedDate.month}-1 00:00:00&end_date=${selectedDate.year}-${selectedDate.month}-31 23:59:59&inspeksi=${inspeksi}");  
+    var url = Uri.parse("http://${globals.endpoint}/api_inspeksi_ihb.php?read&start_date=${selectedDate.year}-${selectedDate.month}-1 00:00:00&end_date=${selectedDate.year}-${selectedDate.month}-31 23:59:59&inspeksi=${inspeksi}&kerusakan=${kerusakan}");  
     try {
       final response = await http.get(url).timeout(
         const Duration(seconds: 1),
@@ -226,13 +234,13 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
                   margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 135),
                   child: 
                       Text(
-                        "Hasil Inspeksi Apar",
+                        "Hasil Inspeksi Hydrant IHB",
                         style: TextStyle(
                           fontFamily: "SanFrancisco",
                           decoration: TextDecoration.none,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w900,
-                          fontSize: 16,
+                          fontSize: 14,
                           color: Color.fromARGB(255, 255, 50, 50)
                         ),
                       ),
@@ -367,13 +375,51 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
                   )
                 ),
             ])),
+            
+          if(inspeksi == "sudah") Align(
+              alignment: Alignment.topLeft,
+              child: Column(children: [
+                Container(
+                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 220),
+                  height: 55,
+                  // width: MediaQuery.of(context).size.width-200,
+                  child: DropdownButton(
+                    value: FilterKerusakanValue,
+                    icon: Icon(Icons.arrow_downward),
+                    iconSize: 24,
+                    elevation: 16,
+                    isExpanded: true,
+                    style: TextStyle(color: Colors.blue, fontSize: 14.0),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.blue,
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        FilterKerusakanValue = newValue!;
+                        if(newValue == FilterKerusakan[0]) kerusakan = "semua";
+                        else if(newValue == FilterKerusakan[1]) kerusakan = "tidak";
+                        else kerusakan="rusak";
+                      });
+                      updateValue();
+                    },
+                    items: FilterKerusakan.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  )
+                ),
+            ])),
+
           Align(
               alignment: Alignment.topRight,
               child: Column(children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height-220,
-                  margin: EdgeInsets.only(top: 220),
+                  height: MediaQuery.of(context).size.height- (inspeksi == "belum" ? 220 : 280),
+                  margin: EdgeInsets.only(top: (inspeksi == "belum" ? 220 : 280)),
                   decoration: BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
                   child: SimpleTablePage(
                       titleColumn: inspeksi == "sudah" ? titleColumn : titleColumn2,

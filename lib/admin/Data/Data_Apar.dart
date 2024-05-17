@@ -88,6 +88,10 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
   List<List<String>> makeData = [];
   String jenis_pemadam = "Dry Chemical Powder";
   
+  static List<String> FilterKadaluarsa = <String>['Kadaluarsa : Tampilkan Semua', 'Kadaluarsa : Belum', 'Kadaluarsa : Sudah'];
+  String FilterKadaluarsaValue = FilterKadaluarsa.first;
+  String kadaluarsa = "semua";
+  
   late DataAPIApar currentData = DataAPIApar(status: "", pesan: "", data: makeData);
 
   @override
@@ -104,7 +108,7 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
   }
 
   void updateValue() async {
-    var url = Uri.parse("http://${globals.endpoint}/api_apar.php?read");  
+    var url = Uri.parse("http://${globals.endpoint}/api_apar.php?read&&kadaluarsa=${kadaluarsa}");  
     try {
       final response = await http.get(url).timeout(
         const Duration(seconds: 1),
@@ -125,7 +129,8 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Scaffold(
+    body: Container(
       decoration: BoxDecoration(color: Colors.white),
       child: Stack(
         children: <Widget>[
@@ -312,13 +317,51 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
                   )
                 ),
             ])),
+            
+          Align(
+              alignment: Alignment.topRight,
+              child: Column(children: [
+                Container(
+                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 165),
+                  height: 55,
+                  // width: MediaQuery.of(context).size.width-200,
+                  child: DropdownButton(
+                    value: FilterKadaluarsaValue,
+                    icon: Icon(Icons.arrow_downward),
+                    iconSize: 24,
+                    elevation: 16,
+                    isExpanded: true,
+                    style: TextStyle(color: Colors.blue, fontSize: 14.0),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.blue,
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        FilterKadaluarsaValue = newValue!;
+                        if(newValue == FilterKadaluarsa[0]) kadaluarsa = "semua";
+                        else if(newValue == FilterKadaluarsa[1]) kadaluarsa = "belum";
+                        else kadaluarsa="sudah";
+                      });
+                      updateValue();
+                    },
+                    items: FilterKadaluarsa.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  )
+                ),
+            ])),
+
           Align(
               alignment: Alignment.topRight,
               child: Column(children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height-180,
-                  margin: EdgeInsets.only(top: 180),
+                  height: MediaQuery.of(context).size.height-220,
+                  margin: EdgeInsets.only(top: 220),
                   decoration: BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
                   child: SimpleTablePage(
                       titleColumn: titleColumn,
@@ -331,6 +374,7 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
           
         ],
       ),
+    ),
     );
   }
 }

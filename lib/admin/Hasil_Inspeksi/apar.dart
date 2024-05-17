@@ -110,12 +110,14 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
 
   static List<String> columnExcel = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'X', 'Y', 'Z'];
   static List<String> DropDownName = <String>['Sudah Di Inspeksi', 'Belum Di Inspeksi'];
-  static List<String> FilterKadaluarsa = <String>['Kadaluarsa : Semua', 'Kadaluarsa : Belum', 'Kadaluarsa : Sudah'];
-  static List<String> FilterKerusakan = <String>['Kerusakan : Semua', 'Kerusakan : Tidak', 'Kerusakan : Rusak'];
   String dropdownValue = DropDownName.first;
+
+  static List<String> FilterKadaluarsa = <String>['Kadaluarsa : Tampilkan Semua', 'Kadaluarsa : Belum', 'Kadaluarsa : Sudah'];
   String FilterKadaluarsaValue = FilterKadaluarsa.first;
-  String FilterKerusakanValue = FilterKerusakan.first;
   String kadaluarsa = "semua";
+  
+  static List<String> FilterKerusakan = <String>['Kerusakan : Tampilkan Semua', 'Kerusakan : Tidak', 'Kerusakan : Rusak'];
+  String FilterKerusakanValue = FilterKerusakan.first; 
   String kerusakan = "semua";
   
   @override
@@ -376,48 +378,12 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
                 ),
             ])),
             
-          Align(
+          if(inspeksi == "sudah") Align(
               alignment: Alignment.topLeft,
               child: Column(children: [
                 Container(
                   margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 220),
-                  height: 48,
-                  width: MediaQuery.of(context).size.width-200,
-                  child: DropdownButton(
-                    value: FilterKadaluarsaValue,
-                    icon: Icon(Icons.arrow_downward),
-                    iconSize: 24,
-                    elevation: 16,
-                    isExpanded: true,
-                    style: TextStyle(color: Colors.blue, fontSize: 14.0),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.blue,
-                    ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        FilterKadaluarsaValue = newValue!;
-                        if(newValue == FilterKadaluarsa[0]) kadaluarsa = "semua";
-                        else if(newValue == FilterKadaluarsa[1]) kadaluarsa = "belum";
-                        else kadaluarsa="sudah";
-                      });
-                      updateValue();
-                    },
-                    items: FilterKadaluarsa.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  )
-                ),
-            ])),
-          Align(
-              alignment: Alignment.topRight,
-              child: Column(children: [
-                Container(
-                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 220),
-                  height: 48,
+                  height: 55,
                   width: MediaQuery.of(context).size.width-200,
                   child: DropdownButton(
                     value: FilterKerusakanValue,
@@ -440,6 +406,43 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
                       updateValue();
                     },
                     items: FilterKerusakan.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  )
+                ),
+            ])),
+            
+          Align(
+              alignment: Alignment.topRight,
+              child: Column(children: [
+                Container(
+                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 220),
+                  height: 55,
+                  width: MediaQuery.of(context).size.width-200,
+                  child: DropdownButton(
+                    value: FilterKadaluarsaValue,
+                    icon: Icon(Icons.arrow_downward),
+                    iconSize: 24,
+                    elevation: 16,
+                    isExpanded: true,
+                    style: TextStyle(color: Colors.blue, fontSize: 14.0),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.blue,
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        FilterKadaluarsaValue = newValue!;
+                        if(newValue == FilterKadaluarsa[0]) kadaluarsa = "semua";
+                        else if(newValue == FilterKadaluarsa[1]) kadaluarsa = "belum";
+                        else kadaluarsa="sudah";
+                      });
+                      updateValue();
+                    },
+                    items: FilterKadaluarsa.map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
