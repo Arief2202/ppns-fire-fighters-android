@@ -50,6 +50,7 @@ dependencies:
   dropdown_button2: ^2.3.9
   permission_handler: ^11.3.1
   pie_chart: ^5.4.0
+  focus_detector: ^2.0.1
   # downloads_path_provider: ^0.1.0
   flutter:
     sdk: flutter

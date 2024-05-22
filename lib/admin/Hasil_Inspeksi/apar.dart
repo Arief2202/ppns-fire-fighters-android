@@ -347,7 +347,7 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
                 Container(
                   margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 170),
                   height: 48,
-                  width: MediaQuery.of(context).size.width-200,
+                  width: MediaQuery.of(context).size.width/2-30,
                   child: DropdownButton(
                     value: dropdownValue,
                     icon: Icon(Icons.arrow_downward),
@@ -384,7 +384,7 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
                 Container(
                   margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 220),
                   height: 55,
-                  width: MediaQuery.of(context).size.width-200,
+                  width: MediaQuery.of(context).size.width/2-30,
                   child: DropdownButton(
                     value: FilterKerusakanValue,
                     icon: Icon(Icons.arrow_downward),
@@ -421,7 +421,7 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
                 Container(
                   margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 220),
                   height: 55,
-                  width: MediaQuery.of(context).size.width-200,
+                  width: MediaQuery.of(context).size.width/2-30,
                   child: DropdownButton(
                     value: FilterKadaluarsaValue,
                     icon: Icon(Icons.arrow_downward),

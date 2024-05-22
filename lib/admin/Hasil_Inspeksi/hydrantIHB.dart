@@ -345,7 +345,7 @@ class _HasilHydrantIHBState extends State<HasilHydrantIHB> with RestorationMixin
                 Container(
                   margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 170),
                   height: 48,
-                  width: MediaQuery.of(context).size.width-200,
+                  width: MediaQuery.of(context).size.width/2-30,
                   child: DropdownButton(
                     value: dropdownValue,
                     icon: Icon(Icons.arrow_downward),
