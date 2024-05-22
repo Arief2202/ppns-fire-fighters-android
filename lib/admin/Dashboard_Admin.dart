@@ -30,14 +30,14 @@ class _DashboardAdminState extends State<DashboardAdmin> {
   @override
   void initState() {
     super.initState();
-    print("page show");
+    check_kadaluarsa();
     notif.initialize(flutterLocalNotificationsPlugin);
     globals.timerNotif = Timer.periodic(
         Duration(milliseconds: 1000), (Timer t) => updateNotification());
   }
 
   void onFocusScreen() {
-    check_kadaluarsa();
+    // check_kadaluarsa();
   }
 
   void updateNotification() async {

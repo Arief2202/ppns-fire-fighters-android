@@ -144,8 +144,7 @@ class _InputNomorState extends State<InputNomor> {
                                                       """
 Nomor  : ${respon['data']['nomor']}
 Lokasi : ${respon['data']['lokasi']}
-Kadaluarsa : ${respon['data']['tanggal_kadaluarsa']}
-""",
+"""+(widget.code == 'apar' ? "Kadaluarsa : ${respon['data']['tanggal_kadaluarsa']}":""),
                                                       style: TextStyle(
                                                           fontSize: 14),
                                                     )
@@ -224,7 +223,7 @@ Tanggal Inspeksi : ${respon['data_inspeksi']['created_at']}
                                               context: context,
                                               type: AlertType.error,
                                               title:
-                                                  "No ${widget.code == 'apar' ? "APAR" : "Hydrant"}  tidak ditemukan di database!",
+                                                  "Nomor ${widget.code == 'apar' ? "APAR" : "Hydrant"}  tidak ditemukan di database!",
                                               buttons: [
                                                 DialogButton(
                                                     child: Text(
