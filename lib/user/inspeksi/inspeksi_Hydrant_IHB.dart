@@ -81,7 +81,7 @@ class _InspeksiHydrantIHBState extends State<InspeksiHydrantIHB> {
                     Container(
                       margin: EdgeInsets.only(top: 110),
                       child: Text(
-                        "Inspeksi APAR",
+                        "Inspeksi Hydrant IHB",
                         style: TextStyle(
                             fontFamily: "SanFrancisco",
                             decoration: TextDecoration.none,

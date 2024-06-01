@@ -19,9 +19,9 @@ import 'package:month_year_picker/month_year_picker.dart';
 String inspeksi = 'sudah';
 
 class PieChartPage extends StatefulWidget {
-  PieChartPage({Key? key, this.restorationId});
+  PieChartPage({Key? key, required this.date, this.restorationId});
   final String? restorationId;
-
+  final DateTime? date;
   @override
   _PieChartPageState createState() => _PieChartPageState();
 }
@@ -43,7 +43,7 @@ class _PieChartPageState extends State<PieChartPage> with RestorationMixin {
   );
 
   @pragma('vm:entry-point')
-  static Route<DateTime> _datePickerRoute(
+  Route<DateTime> _datePickerRoute(
     BuildContext context,
     Object? arguments,
   ) {
@@ -53,7 +53,7 @@ class _PieChartPageState extends State<PieChartPage> with RestorationMixin {
         return DatePickerDialog(
           restorationId: 'date_picker_dialog',
           initialEntryMode: DatePickerEntryMode.calendarOnly,
-          initialDate: DateTime.now(),
+          initialDate: widget.date,
           firstDate: DateTime(DateTime.now().year - 5),
           lastDate: DateTime(DateTime.now().year + 20),
         );
@@ -80,6 +80,15 @@ class _PieChartPageState extends State<PieChartPage> with RestorationMixin {
         _selectedDate.value = newSelectedDate;
         _controller[2].text =
             "${_selectedDate.value.year}-${_selectedDate.value.month}-${_selectedDate.value.day} 00:00:00";
+        
+        Navigator.pop(context);
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) {
+            return PieChartPage(date: newSelectedDate);
+          }),
+        );
         // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         //   content: Text(_controller[2].text),
         // ));
@@ -328,7 +337,7 @@ class _PieChartPageState extends State<PieChartPage> with RestorationMixin {
                     chartValuesOptions: ChartValuesOptions(
                       showChartValueBackground: true,
                       showChartValues: true,
-                      showChartValuesInPercentage: false,
+                      showChartValuesInPercentage: true,
                       showChartValuesOutside: false,
                       decimalPlaces: 1,
                     ),
@@ -356,7 +365,7 @@ class _PieChartPageState extends State<PieChartPage> with RestorationMixin {
                     chartValuesOptions: ChartValuesOptions(
                       showChartValueBackground: true,
                       showChartValues: true,
-                      showChartValuesInPercentage: false,
+                      showChartValuesInPercentage: true,
                       showChartValuesOutside: false,
                       decimalPlaces: 1,
                     ),
@@ -384,7 +393,7 @@ class _PieChartPageState extends State<PieChartPage> with RestorationMixin {
                     chartValuesOptions: ChartValuesOptions(
                       showChartValueBackground: true,
                       showChartValues: true,
-                      showChartValuesInPercentage: false,
+                      showChartValuesInPercentage: true,
                       showChartValuesOutside: false,
                       decimalPlaces: 1,
                     ),

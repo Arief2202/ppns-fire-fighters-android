@@ -261,6 +261,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return globals.loadingAutologin ? Scaffold() : Scaffold(body: globals.isLoggedIn ? (globals.user_role == "0" ? Dashboard() : globals.user_role == "1" ? DashboardAdmin() : PieChartPage()) : LandingPage());
+    return globals.loadingAutologin ? Scaffold() : Scaffold(body: globals.isLoggedIn ? (globals.user_role == "0" ? Dashboard() : globals.user_role == "1" ? DashboardAdmin() : PieChartPage(date: DateTime.now())) : LandingPage());
   }
 }

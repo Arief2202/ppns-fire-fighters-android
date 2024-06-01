@@ -284,7 +284,7 @@ class _DashboardAdminState extends State<DashboardAdmin> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) {
-                          return PieChartPage();
+                          return PieChartPage(date: DateTime.now());
                         }),
                       );
                     },
