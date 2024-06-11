@@ -348,7 +348,7 @@ class SimpleTablePage extends StatelessWidget {
               _controller[3].text = data[i][3];
               Alert(
                 context: context,
-                title: "Edit Data Apar",
+                title: "Edit Data Hydrant IHB",
                 content: Column(
                   children: <Widget>[
                     TextField(
