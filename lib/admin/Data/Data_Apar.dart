@@ -66,6 +66,11 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
   List<TextEditingController> _controller = [
     TextEditingController(text: ''),
     TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
     TextEditingController(text: '')
   ];
 
@@ -73,7 +78,7 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
     if (newSelectedDate != null) {
       setState(() {
         _selectedDate.value = newSelectedDate;
-        _controller[2].text = "${_selectedDate.value.year}-${_selectedDate.value.month}-${_selectedDate.value.day} 00:00:00";
+        _controller[4].text = "${_selectedDate.value.year}-${_selectedDate.value.month}-${_selectedDate.value.day} 00:00:00";
         // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         //   content: Text(_controller[2].text),
         // ));
@@ -83,7 +88,7 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
 
   Timer? timer;
   List<String> titleColumn = [
-    "id", "Jenis Pemadam", "Nomor",  "Lokasi", "Tanggal Kadaluarsa", "Created at"
+    "id", "Jenis Pemadam", "Nomor",  "Lokasi",  "berat", "Rating", "Tanggal Kadaluarsa", "Created at"
   ];
   List<List<String>> makeData = [];
   String jenis_pemadam = "Dry Chemical Powder";
@@ -237,7 +242,7 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
                     ),
                     onPressed: (){
                           setState(() {
-                            _controller[2].text = "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day} ${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}";
+                            _controller[4].text = "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day} ${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second}";
                           });
                           Alert(
                             context: context,
@@ -266,6 +271,22 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
                                   ),
                                   controller: _controller[1],
                                 ),
+                                TextField(
+                                  // obscureText: true,
+                                  decoration: InputDecoration(
+                                    // icon: Icon(Icons.lock),
+                                    labelText: 'Berat',
+                                  ),
+                                  controller: _controller[2],
+                                ),
+                                TextField(
+                                  // obscureText: true,
+                                  decoration: InputDecoration(
+                                    // icon: Icon(Icons.lock),
+                                    labelText: 'Rating',
+                                  ),
+                                  controller: _controller[3],
+                                ),
                                 Padding(padding: EdgeInsets.all(10)),
                                 OutlinedButton(
                                   onPressed: () {
@@ -279,7 +300,7 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
                                     // icon: Icon(Icons.lock),
                                     labelText: 'Tanggal Kadaluarsa',
                                   ),
-                                  controller: _controller[2],
+                                  controller: _controller[4],
                                 ),
                                 // TextField(
                                 //   // obscureText: true,
@@ -297,7 +318,7 @@ class _DataAparState extends State<DataApar> with RestorationMixin {
                                   style: TextStyle(color: Colors.white, fontSize: 20),
                                 ),
                                 onPressed: () async{                                  
-                                  var url = Uri.parse("http://${globals.endpoint}/api_apar.php?create&jenis_pemadam=${jenis_pemadam}&nomor=${_controller[0].text}&lokasi=${_controller[1].text}&kadaluarsa=${_controller[2].text}");  
+                                  var url = Uri.parse("http://${globals.endpoint}/api_apar.php?create&jenis_pemadam=${jenis_pemadam}&nomor=${_controller[0].text}&lokasi=${_controller[1].text}&berat=${_controller[2].text}&rating=${_controller[3].text}&kadaluarsa=${_controller[4].text}");  
                                   try {
                                     final response = await http.get(url).timeout(
                                       const Duration(seconds: 1),
@@ -394,6 +415,9 @@ class SimpleTablePage extends StatelessWidget {
     TextEditingController(text: ''),
     TextEditingController(text: ''),
     TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
+    TextEditingController(text: ''),
     TextEditingController(text: '')
   ];
 
@@ -422,6 +446,8 @@ class SimpleTablePage extends StatelessWidget {
               _controller[2].text = data[i][3];
               _controller[3].text = data[i][4];
               _controller[4].text = data[i][5];
+              _controller[5].text = data[i][6];
+              _controller[6].text = data[i][7];
               Alert(
                 context: context,
                 title: "Edit Data Apar",
@@ -458,9 +484,23 @@ class SimpleTablePage extends StatelessWidget {
                     TextField(
                       decoration: InputDecoration(
                         // icon: Icon(Icons.lock),
-                        labelText: 'Tanggal Kadaluarsa',
+                        labelText: 'Berat',
                       ),
                       controller: _controller[3],
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.lock),
+                        labelText: 'Rating',
+                      ),
+                      controller: _controller[4],
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                        // icon: Icon(Icons.lock),
+                        labelText: 'Tanggal Kadaluarsa',
+                      ),
+                      controller: _controller[5],
                     ),
                     TextField(
                       readOnly: true,
@@ -468,7 +508,7 @@ class SimpleTablePage extends StatelessWidget {
                         // icon: Icon(Icons.lock),
                         labelText: 'Created at',
                       ),
-                      controller: _controller[4],
+                      controller: _controller[6],
                     ),
                   ],
                 ),
@@ -480,6 +520,7 @@ class SimpleTablePage extends StatelessWidget {
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     onPressed: () async {
+                      print(_controller[0].text);
                       var url = Uri.parse("http://${globals.endpoint}/api_apar.php?delete&id=${_controller[0].text}");  
                       try {
                         final response = await http.get(url).timeout(
@@ -498,7 +539,7 @@ class SimpleTablePage extends StatelessWidget {
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     onPressed: () async {
-                      var url = Uri.parse("http://${globals.endpoint}/api_apar.php?update&id=${_controller[0].text}&jenis_pemadam=${jenis_pemadam}&nomor=${_controller[1].text}&lokasi=${_controller[2].text}&kadaluarsa=${_controller[3].text}");  
+                      var url = Uri.parse("http://${globals.endpoint}/api_apar.php?update&id=${_controller[0].text}&jenis_pemadam=${jenis_pemadam}&nomor=${_controller[1].text}&lokasi=${_controller[2].text}&lokasi=${_controller[2].text}&berat=${_controller[3].text}&rating=${_controller[4].text}&kadaluarsa=${_controller[5].text}");  
                       try {
                         final response = await http.get(url).timeout(
                           const Duration(seconds: 1),

@@ -5,7 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class notif{
   static Future initialize(FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
     var androidInitialize = new AndroidInitializationSettings('mipmap/launcher_icon');
-    var iOSInitialize = new IOSInitializationSettings();
+    var iOSInitialize = new DarwinInitializationSettings();
     var initializationsSettings = new InitializationSettings(android: androidInitialize,
         iOS: iOSInitialize);
     await flutterLocalNotificationsPlugin.initialize(initializationsSettings );
@@ -26,7 +26,7 @@ class notif{
     );
 
     var not= NotificationDetails(android: androidPlatformChannelSpecifics,
-        iOS: IOSNotificationDetails()
+        iOS: DarwinNotificationDetails()
     );
     await fln.show(id, head, body,not );
   }

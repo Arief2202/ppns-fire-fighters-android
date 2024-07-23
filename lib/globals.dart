@@ -6,7 +6,7 @@ bool loadingAutologin = false;
 bool isLoggedIn = false;
 String endpoint = "0.0.0.0";
 
-const int httpTimeout = 1;
+const int httpTimeout = 3;
 String user_id = "";
 String user_name = "";
 String user_email = "";

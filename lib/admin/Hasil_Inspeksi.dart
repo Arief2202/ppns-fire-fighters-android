@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ppns_fire_fighters/admin/Hasil_Inspeksi/apar.dart';
 import 'package:ppns_fire_fighters/admin/Hasil_Inspeksi/hydrantIHB.dart';
 import 'package:ppns_fire_fighters/admin/Hasil_Inspeksi/hydrantOHB.dart';
+import 'package:ppns_fire_fighters/admin/Hasil_Inspeksi/rumah_pompa.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -254,6 +255,56 @@ class _HasilInspeksiState extends State<HasilInspeksi> {
                                 ),
                                 Text(
                                   "Hydrant Indoor (dalam gedung)",
+                                  style: TextStyle(
+                                    fontSize: 12
+                                  ),
+                                  )
+                              ],
+                            ),
+                          ],
+                        )),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  elevation: 5,
+                  margin: EdgeInsets.all(10),
+                ),
+                
+                Card(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) {
+                          return HasilRumahPompa();
+                        }),
+                      );
+                    },
+                    child: Container(
+                        width: MediaQuery.of(context).size.width - 50,
+                        padding: EdgeInsets.all(5),
+                        height: 100,
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              'assets/img/hydrant.png',
+                              width: 100,
+                              height: 100,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Rumah Pompa",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                Text(
+                                  "Rumah Pompa",
                                   style: TextStyle(
                                     fontSize: 12
                                   ),

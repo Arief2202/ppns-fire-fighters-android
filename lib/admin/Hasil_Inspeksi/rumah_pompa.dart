@@ -16,18 +16,17 @@ import 'package:excel/excel.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-String inspeksi = 'sudah';
 
-class HasilApar extends StatefulWidget {
-  HasilApar({super.key, this.restorationId});
+class HasilRumahPompa extends StatefulWidget {
+  HasilRumahPompa({super.key, this.restorationId});
   final String? restorationId;
 
   @override
-  _HasilAparState createState() => _HasilAparState();
+  _HasilRumahPompaState createState() => _HasilRumahPompaState();
 }
 
 
-class _HasilAparState extends State<HasilApar> with RestorationMixin {
+class _HasilRumahPompaState extends State<HasilRumahPompa> with RestorationMixin {
   @override
   String? get restorationId => widget.restorationId;
   final RestorableDateTime _selectedDate =
@@ -68,6 +67,36 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
     registerForRestoration(
         _restorableDatePickerRouteFuture, 'date_picker_route_future');
   }
+  static String lokasiText = "Lokasi";
+  static String kondisiText = "Kondisi rumah pompa Panas memadai";
+  static String ventilasiText = "Ventilasi";
+  static String katup_hisapText = "Katup hisap dan pelepasan pompa serta katup bypass terbuka penuh";
+  static String perpipaanText = "Perpipaan bebas dari kebocoran.";
+  static String pengukur_hisapText = "Pembacaan pengukur tekanan saluran hisap";
+  static String pengukur_sistemText = "Pembacaan pengukur tekanan saluran sistem";
+  static String tangki_hisapText = "Tangki hisap penuh";
+  static String saringan_hisapText = "Saringan hisap lubang basah";
+  static String katup_ujiText = "Katup uji aliran air";
+  static String lampu_pengontrolText = "Lampu pilot pengontrol (daya hidup) menyala.";
+  static String lampu_saklarText = "Lampu pilot normal sakelar transfer menyala";
+  static String saklar_isolasiText = "Sakelar isolasi tertutup — sumber siaga (darurat).";
+  static String lampu_rotasiText = "lampu pilot rotasi fase normal menyala.";
+  static String level_oli_motorText = "Level oli pada kaca penglihatan motor vertical";
+  static String pompa_pemeliharaanText = "Pompa pemeliharaan daya untuk tekanan jockey pump";
+  static String tangki_bahan_bakarText = "Tangki bahan bakar terisi minimal dua pertiganya.";
+  static String saklar_pemilihText = "Sakelar pemilih pengontrol berada pada posisi otomatis.";
+  static String pembacaan_teganganText = "Pembacaan tegangan baterai";
+  static String pembacaan_arusText = "Pembacaan arus pengisian baterai";
+  static String lampu_bateraiText = "lampu pilot baterai menyala atau baterai rusak lampu pilot mati.";
+  static String semua_lampu_alarmText = "Semua lampu pilot alarm mati";
+  static String pengukur_waktuText = "Pengukur waktu berjalan mesin sedang membaca";
+  static String ketinggian_oliText = "Ketinggian oli pada penggerak gigi sudut kanan";
+  static String level_oli_mesinText = "Level oli bak mesin";
+  static String ketinggian_airText = "Ketinggian air pendingin";
+  static String tingkat_elektrolitText = "Tingkat elektrolit dalam baterai";
+  static String terminal_bateraiText = "Terminal baterai bebas dari korosi";
+  static String pemanas_jaketText = "Pemanas jaket air sedang beroperasi";
+  static String kondisi_uapText = "Kondisi sistem uap";
 
   List<TextEditingController> _controller = [
     TextEditingController(text: ''),
@@ -89,52 +118,115 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
   DateTime selectedDate = DateTime.now();
   Timer? timer;
   List<String> titleColumn = [
-    "id inspeksi", "Email Inspektor", "Jenis Pemadam", "Lokasi Apar", "Berat", "Rating", "Tanggal Kadaluarsa Apar", "Apar Tersedia", "Kondisi Tabung", "Segel Pin", "Tuas Pegangan", "Label Segitiga", "Label Instruksi", "Kondisi Selang", "Tekanan Tabung", "Posisi", "Tanggal Inspeksi"
+    "id inspeksi", 
+    "Email Inspektor", 
+    lokasiText,
+    kondisiText,
+    ventilasiText,
+    katup_hisapText,
+    perpipaanText,
+    pengukur_hisapText,
+    pengukur_sistemText,
+    tangki_hisapText,
+    saringan_hisapText,
+    katup_ujiText,
+    lampu_pengontrolText,
+    lampu_saklarText,
+    saklar_isolasiText,
+    lampu_rotasiText,
+    level_oli_motorText,
+    pompa_pemeliharaanText,
+    tangki_bahan_bakarText,
+    saklar_pemilihText,
+    pembacaan_teganganText,
+    pembacaan_arusText,
+    lampu_bateraiText,
+    semua_lampu_alarmText,
+    pengukur_waktuText,
+    ketinggian_oliText,
+    level_oli_mesinText,
+    ketinggian_airText,
+    tingkat_elektrolitText,
+    terminal_bateraiText,
+    pemanas_jaketText,
+    kondisi_uapText,
   ];
+  TextStyle tsyleTitle = TextStyle(
+    fontSize: 18,
+  );
+  TextStyle tsyleContent = TextStyle(
+    fontSize: 18,
+  );
   List<String> titleColumn2 = [
-    "id", "Jenis Pemadam", "Lokasi Apar", "Berat", "Rating", "Tanggal Kadaluarsa", "Timestamp"
+    "id", "Lokasi", "Timestamp"
   ];
   
   List<String> titleColumnExport = [
-    "id inspeksi", "Email Inspektor", "Nomor Apar", "Jenis Pemadam", "Lokasi Apar", "Berat",  "Rating",  "Tanggal Kadaluarsa Apar", "Apar Tersedia", "Kondisi Tabung", "Segel Pin", "Tuas Pegangan", "Label Segitiga", "Label Instruksi", "Kondisi Selang", "Tekanan Tabung", "Posisi", "Tanggal Inspeksi"
+    "id inspeksi", 
+    "Email Inspektor",     
+    lokasiText,
+    kondisiText,
+    ventilasiText,
+    katup_hisapText,
+    perpipaanText,
+    pengukur_hisapText,
+    pengukur_sistemText,
+    tangki_hisapText,
+    saringan_hisapText,
+    katup_ujiText,
+    lampu_pengontrolText,
+    lampu_saklarText,
+    saklar_isolasiText,
+    lampu_rotasiText,
+    level_oli_motorText,
+    pompa_pemeliharaanText,
+    tangki_bahan_bakarText,
+    saklar_pemilihText,
+    pembacaan_teganganText,
+    pembacaan_arusText,
+    lampu_bateraiText,
+    semua_lampu_alarmText,
+    pengukur_waktuText,
+    ketinggian_oliText,
+    level_oli_mesinText,
+    ketinggian_airText,
+    tingkat_elektrolitText,
+    terminal_bateraiText,
+    pemanas_jaketText,
+    kondisi_uapText,
+
   ];
   List<String> titleColumnExport2 = [
-    "id", "Jenis Pemadam", "Nomor Apar", "Lokasi", "Berat", "Rating", "Tanggal Kadaluarsa", "Timestamp"
+    "id", "Nomor Hydrant", "Lokasi", "Timestamp"
   ];
 
   List<List<String>> makeData = [];
   
   
-  late DataInspeksiAparAPI currentData = DataInspeksiAparAPI(status: "", pesan: "", data: makeData);
-  late DataAPIApar currentDataApar = DataAPIApar(status: "", pesan: "", data: makeData);
-
+  late DataInspeksiRumahPompaAPI currentData = DataInspeksiRumahPompaAPI(status: "", pesan: "", data: makeData);
   static List<String> columnExcel = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'X', 'Y', 'Z'];
   static List<String> DropDownName = <String>['Sudah Di Inspeksi', 'Belum Di Inspeksi'];
   String dropdownValue = DropDownName.first;
-
-  static List<String> FilterKadaluarsa = <String>['Kadaluarsa : Tampilkan Semua', 'Kadaluarsa : Belum', 'Kadaluarsa : Sudah'];
-  String FilterKadaluarsaValue = FilterKadaluarsa.first;
-  String kadaluarsa = "semua";
   
   static List<String> FilterKerusakan = <String>['Kerusakan : Tampilkan Semua', 'Kerusakan : Tidak', 'Kerusakan : Rusak'];
   String FilterKerusakanValue = FilterKerusakan.first; 
   String kerusakan = "semua";
-  
+
   @override
   void initState() {
     super.initState();
     updateValue();
     timer = Timer.periodic(Duration(milliseconds: 500), (Timer t) => updateValue());
   }
-
   @override
   void dispose() {
     timer!.cancel();
     super.dispose();
   }
 
+
   void updateValue() async {
-    var url = Uri.parse("http://${globals.endpoint}/api_inspeksi_apar.php?read&start_date=${selectedDate.year}-${selectedDate.month}-1 00:00:00&end_date=${selectedDate.year}-${selectedDate.month}-31 23:59:59&inspeksi=${inspeksi}&kadaluarsa=${kadaluarsa}&kerusakan=${kerusakan}");  
+    var url = Uri.parse("http://${globals.endpoint}/api_inspeksi_rumah_pompa.php?read&start_date=${selectedDate.year}-${selectedDate.month}-1 00:00:00&end_date=${selectedDate.year}-${selectedDate.month}-31 23:59:59&kerusakan=${kerusakan}");  
     try {
       final response = await http.get(url).timeout(
         const Duration(seconds: 1),
@@ -142,17 +234,29 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
           return http.Response('Error', 408);
         },
       );
-      print(response.body);
       if (response.statusCode == 200) {
         var respon = Json.tryDecode(response.body);
         if (this.mounted) {
+          if(respon?.isNotEmpty ?? false){
           setState(() {
-            if(inspeksi == "sudah") currentData = DataInspeksiAparAPI.fromJson(respon);
-            else currentDataApar = DataAPIApar.fromJson(respon);
+            currentData = DataInspeksiRumahPompaAPI.fromJson(respon);
           });
+          }
+          // print(currentData.data[0]);
         }
       }
     } on Exception catch (_) {}
+
+    setState(() {
+      tsyleTitle = TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w500
+      );
+      tsyleContent = TextStyle(
+        fontSize: 18,
+        // fontWeight: FontWeight.w700
+      );
+    });
   }
 
   @override
@@ -236,13 +340,13 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
                   margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 135),
                   child: 
                       Text(
-                        "Hasil Inspeksi Apar",
+                        "Hasil Inspeksi Hydrant OHB",
                         style: TextStyle(
                           fontFamily: "SanFrancisco",
                           decoration: TextDecoration.none,
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w900,
-                          fontSize: 16,
+                          fontSize: 14,
                           color: Color.fromARGB(255, 255, 50, 50)
                         ),
                       ),
@@ -268,41 +372,26 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
                         if (!status.isGranted) {
                           await Permission.storage.request();
                         }
+                        if(currentData.data.isNotEmpty){
+                          var excel = Excel.createExcel();
+                          Sheet sheetObject = excel['Sheet1'];
+                          // CellStyle cellStyle = CellStyle(fontFamily :getFontFamily(FontFamily.Calibri));
+                          for(int a = 0; a< titleColumn.length; a++){
+                            sheetObject.cell(CellIndex.indexByString('A${a+1}')).value = TextCellValue(titleColumn[a]);
+                            sheetObject.cell(CellIndex.indexByString('B${a+1}')).value = TextCellValue(currentData.data[0][a]);
+                          }          
+                          var fileBytes = excel.save();
 
-                        var excel = Excel.createExcel();
-                        Sheet sheetObject = excel['Sheet1'];
-                        // CellStyle cellStyle = CellStyle(fontFamily :getFontFamily(FontFamily.Calibri));
-                        if(inspeksi=='sudah'){
-                          for(int a = 0; a< titleColumnExport.length; a++){
-                            sheetObject.cell(CellIndex.indexByString('${columnExcel[a]}1')).value = TextCellValue(titleColumnExport[a]);
-                          }
-                          for(int i=0; i<currentData.data.length; i++){
-                            for(int j=0; j<titleColumnExport.length; j++){
-                              sheetObject.cell(CellIndex.indexByString('${columnExcel[j]}${i+2}')).value = TextCellValue(currentData.data[i][j]);
-                            }
-                          }                      
-                        }
-                        else{
-                          for(int a = 0; a< titleColumnExport2.length; a++){
-                            sheetObject.cell(CellIndex.indexByString('${columnExcel[a]}1')).value = TextCellValue(titleColumnExport2[a]);
-                          }
-                          for(int i=0; i<currentDataApar.data.length; i++){
-                            for(int j=0; j<titleColumnExport2.length; j++){
-                              sheetObject.cell(CellIndex.indexByString('${columnExcel[j]}${i+2}')).value = TextCellValue(currentDataApar.data[i][j]);
-                            }
-                          }                      
-                        }
-                        var fileBytes = excel.save();
-
-                        Directory appDocDirectory = await getApplicationDocumentsDirectory();
-                        var dir = "/storage/emulated/0/ppns_fire_fighters/export/${inspeksi}_inspeksi_apar_${globals.monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
-                        // var dir = "${appDocDirectory.path}/export/${inspeksi}_inspeksi_apar_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
-                        File(join(dir))
-                          ..createSync(recursive: true)
-                          ..writeAsBytesSync(fileBytes!);
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text("Export Complete\nDir : ${dir}"),
-                        ));
+                          Directory appDocDirectory = await getApplicationDocumentsDirectory();
+                          var dir = "/storage/emulated/0/ppns_fire_fighters/export/inspeksi_rumah_pompa_${globals.monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
+                          // var dir = "${appDocDirectory.path}/export/${inspeksi}_inspeksi_apar_${monthName[selectedDate.month-1]}_${selectedDate.year}.xlsx";
+                          File(join(dir))
+                            ..createSync(recursive: true)
+                            ..writeAsBytesSync(fileBytes!);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Export Complete\nDir : ${dir}"),
+                          ));
+                        } 
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
@@ -341,127 +430,32 @@ class _HasilAparState extends State<HasilApar> with RestorationMixin {
                   )
                 ),
             ])),
-          Align(
-              alignment: Alignment.topRight,
-              child: Column(children: [
-                Container(
-                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 170),
-                  height: 48,
-                  width: MediaQuery.of(context).size.width/2-30,
-                  child: DropdownButton(
-                    value: dropdownValue,
-                    icon: Icon(Icons.arrow_downward),
-                    iconSize: 24,
-                    elevation: 16,
-                    isExpanded: true,
-                    style: TextStyle(color: Colors.blue, fontSize: 14.0),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.blue,
-                    ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        dropdownValue = newValue!;
-                        if(newValue == DropDownName[0]) inspeksi = "sudah";
-                        else if(newValue == DropDownName[1]) inspeksi = "belum";
-                        else inspeksi="sudah";
-                      });
-                      updateValue();
-                    },
-                    items: DropDownName.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  )
-                ),
-            ])),
-            
-          if(inspeksi == "sudah") Align(
-              alignment: Alignment.topLeft,
-              child: Column(children: [
-                Container(
-                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 220),
-                  height: 55,
-                  width: MediaQuery.of(context).size.width/2-30,
-                  child: DropdownButton(
-                    value: FilterKerusakanValue,
-                    icon: Icon(Icons.arrow_downward),
-                    iconSize: 24,
-                    elevation: 16,
-                    isExpanded: true,
-                    style: TextStyle(color: Colors.blue, fontSize: 14.0),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.blue,
-                    ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        FilterKerusakanValue = newValue!;
-                        if(newValue == FilterKerusakan[0]) kerusakan = "semua";
-                        else if(newValue == FilterKerusakan[1]) kerusakan = "tidak";
-                        else kerusakan="rusak";
-                      });
-                      updateValue();
-                    },
-                    items: FilterKerusakan.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  )
-                ),
-            ])),
-            
-          Align(
-              alignment: Alignment.topRight,
-              child: Column(children: [
-                Container(
-                  margin: EdgeInsets.only(left: 20.0, right: 10.0, top: 220),
-                  height: 55,
-                  width: MediaQuery.of(context).size.width/2-30,
-                  child: DropdownButton(
-                    value: FilterKadaluarsaValue,
-                    icon: Icon(Icons.arrow_downward),
-                    iconSize: 24,
-                    elevation: 16,
-                    isExpanded: true,
-                    style: TextStyle(color: Colors.blue, fontSize: 14.0),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.blue,
-                    ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        FilterKadaluarsaValue = newValue!;
-                        if(newValue == FilterKadaluarsa[0]) kadaluarsa = "semua";
-                        else if(newValue == FilterKadaluarsa[1]) kadaluarsa = "belum";
-                        else kadaluarsa="sudah";
-                      });
-                      updateValue();
-                    },
-                    items: FilterKadaluarsa.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  )
-                ),
-            ])),
-          Align(
+            Align(
               alignment: Alignment.topRight,
               child: Column(children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height-280,
-                  margin: EdgeInsets.only(top: 280),
-                  decoration: BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
-                  child: SimpleTablePage(
-                      titleColumn: inspeksi == "sudah" ? titleColumn : titleColumn2,
-                      data: inspeksi == "sudah" ? currentData.data : currentDataApar.data,
+                  height: MediaQuery.of(context).size.height-230,
+                  margin: EdgeInsets.only(top: 230),
+                  // decoration: BoxDecoration(color: const Color.fromARGB(49, 244, 67, 54)),
+                  child: SingleChildScrollView(child:
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if(currentData.data.isNotEmpty) for(int a=0; a<titleColumn.length; a++) Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(style: tsyleTitle, "${titleColumn[a]} : "),
+                            Text(style: tsyleContent, "${currentData.data[0][a]}"),
+                            SizedBox(height: 10),
+                        ],)
+                      ],
+                    ),
+                  ),
                   ),
                 )
               ]
@@ -491,15 +485,15 @@ class SimpleTablePage extends StatelessWidget {
         columnsLength: titleColumn.length,
         rowsLength: data.length,
         columnsTitleBuilder: (i) => Text(titleColumn[i]),
-        contentCellBuilder: (i, j) => Text(inspeksi == 'sudah' ? (i > 1 ? data[j][i+1] : data[j][i]) : (i > 1 ? data[j][i+1] : data[j][i])),
-        legendCell: Text('Nomor Apar'),
+        contentCellBuilder: (i, j) => Text((i > 1 ? data[j][i+1] : data[j][i])),
+        // legendCell: Text('No Hydrant'),
         cellDimensions: CellDimensions.fixed(
           contentCellWidth: 120, 
           contentCellHeight: 50, 
           stickyLegendWidth: 85, 
           stickyLegendHeight: 50
         ),
-        rowsTitleBuilder: (i) => Text(inspeksi == 'sudah' ? data[i][2] : data[i][2]),
+        rowsTitleBuilder: (i) => Text(data[i][2]),
       ),
     );
   }

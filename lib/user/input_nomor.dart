@@ -153,7 +153,7 @@ Lokasi : ${respon['data']['lokasi']}
                                                 buttons: [
                                                   DialogButton(
                                                       child: Text(
-                                                        "Close",
+                                                        "Next",
                                                         style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 20),

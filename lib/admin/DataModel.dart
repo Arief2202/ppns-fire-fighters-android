@@ -102,6 +102,22 @@ class DataInspeksiIHBAPI {
     data: objectToArrayInspeksiIHB(json["data"]),
   );
 }
+class DataInspeksiRumahPompaAPI {
+  DataInspeksiRumahPompaAPI({
+    required this.status,
+    required this.pesan,
+    required this.data,
+  });
+  String status;
+  String pesan;
+  List<List<String>> data;
+  
+  factory DataInspeksiRumahPompaAPI.fromJson(Map<String, dynamic> json) => DataInspeksiRumahPompaAPI(
+    status: json["status"],
+    pesan: json["pesan"],
+    data: objectToArrayInspeksiRumahPompa(json["data"]),
+  );
+}
 
 List<List<String>> objectToArrayApar(List<dynamic> data) {
   final List<List<String>> output = [];
@@ -111,6 +127,8 @@ List<List<String>> objectToArrayApar(List<dynamic> data) {
     row.add(data[a]['jenis_pemadam']);
     row.add(data[a]['nomor']);
     row.add(data[a]['lokasi']);
+    row.add(data[a]['berat']);
+    row.add(data[a]['rating']);
     row.add(data[a]['tanggal_kadaluarsa']);
     row.add(data[a]['timestamp']);
     output.add(row);
@@ -139,6 +157,8 @@ List<List<String>> objectToArrayInspeksiApar(List<dynamic> data) {
     row.add(data[a]['apar']['nomor']);
     row.add(data[a]['apar']['jenis_pemadam']);
     row.add(data[a]['apar']['lokasi']);
+    row.add(data[a]['apar']['berat']);
+    row.add(data[a]['apar']['rating']);
     row.add(data[a]['apar']['tanggal_kadaluarsa']);
     row.add(data[a]['tersedia']);
     row.add(data[a]['kondisi_tabung']);
@@ -195,6 +215,47 @@ List<List<String>> objectToArrayInspeksiIHB(List<dynamic> data) {
     row.add(data[a]['kondisi_coupling']);
     row.add(data[a]['kondisi_landing_valve']);
     row.add(data[a]['kondisi_tray']);
+    row.add(data[a]['created_at']);
+    output.add(row);
+  }
+  return output;
+}
+List<List<String>> objectToArrayInspeksiRumahPompa(List<dynamic> data) {
+  final List<List<String>> output = [];
+  for(int a=0; a< data.length; a++){
+    final List<String> row = [];
+    row.add(data[a]['id']);
+    row.add(data[a]['user']['email']);
+    row.add(data[a]['lokasi']);
+    row.add(data[a]['kondisi']);
+    row.add(data[a]['ventilasi']);
+    row.add(data[a]['katup_hisap']);
+    row.add(data[a]['perpipaan']);
+    row.add(data[a]['pengukur_hisap']);
+    row.add(data[a]['pengukur_sistem']);
+    row.add(data[a]['tangki_hisap']);
+    row.add(data[a]['saringan_hisap']);
+    row.add(data[a]['katup_uji']);
+    row.add(data[a]['lampu_pengontrol']);
+    row.add(data[a]['lampu_saklar']);
+    row.add(data[a]['saklar_isolasi']);
+    row.add(data[a]['lampu_rotasi']);
+    row.add(data[a]['level_oli_motor']);
+    row.add(data[a]['pompa_pemeliharaan']);
+    row.add(data[a]['tangki_bahan_bakar']);
+    row.add(data[a]['saklar_pemilih']);
+    row.add(data[a]['pembacaan_tegangan']);
+    row.add(data[a]['pembacaan_arus']);
+    row.add(data[a]['lampu_baterai']);
+    row.add(data[a]['semua_lampu_alarm']);
+    row.add(data[a]['pengukur_waktu']);
+    row.add(data[a]['ketinggian_oli']);
+    row.add(data[a]['level_oli_mesin']);
+    row.add(data[a]['ketinggian_air']);
+    row.add(data[a]['tingkat_elektrolit']);
+    row.add(data[a]['terminal_baterai']);
+    row.add(data[a]['pemanas_jaket']);
+    row.add(data[a]['kondisi_uap']);
     row.add(data[a]['created_at']);
     output.add(row);
   }
